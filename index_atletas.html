@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
 :root {
-  --color-azul: #1E3A8A; /* Azul corporativo del logo */
+  --color-azul: #1E3A8A;   /* Azul corporativo del logo */
   --color-mostaza: #D97706; /* Mostaza corporativo del logo */
   --bg-claro: #F9FAFB;
 }
@@ -45,71 +45,71 @@ body {
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <!-- Formulario de Registro / Edición -->
             <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 lg:col-span-1">
-                <h2 id="fT" class="text-xl font-bold mb-4 text-gray-800">Registrar Nuevo Atleta</h2>
+                <h2 id="fT" class="text-xl font-bold mb-4" style="color: var(--color-azul);">Registrar Nuevo Atleta</h2>
                 <form id="aForm" class="space-y-4">
                     <input type="hidden" id="aId">
                     <div>
                         <label class="block text-sm font-semibold text-gray-700">Nombre</label>
-                        <input type="text" id="nombre" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2.5 border focus:ring-amber-500 focus:border-amber-500">
+                        <input type="text" id="nombre" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2.5 border focus:ring-amber-500 focus:border-amber-500 outline-none">
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-gray-700">Apellido</label>
-                        <input type="text" id="apellido" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2.5 border focus:ring-amber-500 focus:border-amber-500">
+                        <input type="text" id="apellido" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2.5 border focus:ring-amber-500 focus:border-amber-500 outline-none">
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-gray-700">Cédula de Identidad</label>
-                        <input type="text" id="cedulaIdentidad" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2.5 border focus:ring-amber-500 focus:border-amber-500">
+                        <input type="text" id="cedulaIdentidad" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2.5 border focus:ring-amber-500 focus:border-amber-500 outline-none">
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-gray-700">Teléfono</label>
-                        <input type="text" id="telefono" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2.5 border focus:ring-amber-500 focus:border-amber-500">
+                        <input type="text" id="telefono" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2.5 border focus:ring-amber-500 focus:border-amber-500 outline-none">
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-gray-700">Fecha de Nacimiento</label>
-                        <input type="date" id="fechaNacimiento" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2.5 border focus:ring-amber-500 focus:border-amber-500">
+                        <input type="date" id="fechaNacimiento" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2.5 border focus:ring-amber-500 focus:border-amber-500 outline-none">
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-gray-700">Categoría</label>
-                        <select id="categoria" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2.5 border focus:ring-amber-500 focus:border-amber-500">
+                        <select id="categoria" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2.5 border focus:ring-amber-500 focus:border-amber-500 outline-none">
                             <option value="">Seleccione...</option>
-                            <option value="U8">U7</option>
-                            <option value="U10">U9</option>
-                            <option value="U12">U11</option>
-                            <option value="U14">U13</option>
-                            <option value="U16">U15</option>
-                            <option value="U18">U17</option>
-                            <option value="U21">U19</option>
+                            <option value="U7">U7</option>
+                            <option value="U9">U9</option>
+                            <option value="U11">U11</option>
+                            <option value="U13">U13</option>
+                            <option value="U15">U15</option>
+                            <option value="U17">U17</option>
+                            <option value="U19">U19</option>
                             <option value="Senior">Senior</option>
                         </select>
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-gray-700">Número de Camiseta</label>
-                        <input type="number" id="nroCamiseta" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2.5 border focus:ring-amber-500 focus:border-amber-500">
+                        <input type="number" id="nroCamiseta" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2.5 border focus:ring-amber-500 focus:border-amber-500 outline-none">
                     </div>
                     <div class="grid grid-cols-2 gap-2">
                         <div>
                             <label class="block text-sm font-semibold text-gray-700">Peso (kg)</label>
-                            <input type="number" step="0.1" id="peso" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2.5 border focus:ring-amber-500 focus:border-amber-500">
+                            <input type="number" step="0.1" id="peso" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2.5 border focus:ring-amber-500 focus:border-amber-500 outline-none">
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700">Talla (cm)</label>
-                            <input type="number" step="0.1" id="talla" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2.5 border focus:ring-amber-500 focus:border-amber-500">
+                            <input type="number" step="0.1" id="talla" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2.5 border focus:ring-amber-500 focus:border-amber-500 outline-none">
                         </div>
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-gray-700">Frecuencia de Pago</label>
-                        <select id="frecuenciaPago" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2.5 border focus:ring-amber-500 focus:border-amber-500">
+                        <select id="frecuenciaPago" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2.5 border focus:ring-amber-500 focus:border-amber-500 outline-none">
                             <option value="mensual">Mensual</option>
                             <option value="quincenal">Quincenal</option>
                         </select>
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-gray-700">Monto de Pago ($)</label>
-                        <input type="number" step="0.01" id="montoPago" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2.5 border focus:ring-amber-500 focus:border-amber-500">
+                        <input type="number" step="0.01" id="montoPago" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2.5 border focus:ring-amber-500 focus:border-amber-500 outline-none">
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-gray-700">Fecha de Pago</label>
-                        <input type="date" id="fechaUltimoPago" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2.5 border focus:ring-amber-500 focus:border-amber-500">
+                        <input type="date" id="fechaUltimoPago" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2.5 border focus:ring-amber-500 focus:border-amber-500 outline-none">
                     </div>
                     <div class="flex space-x-2 pt-2">
                         <button type="submit" id="bS" class="w-full py-2.5 px-4 text-white font-bold rounded-lg shadow transition" style="background-color: var(--color-mostaza);">Guardar Atleta</button>
@@ -121,8 +121,8 @@ body {
             <!-- Listado / Nómina -->
             <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 lg:col-span-2">
                 <div class="flex flex-col md:flex-row justify-between items-center mb-4 gap-2">
-                    <h2 class="text-xl font-bold text-gray-800">Nómina del Club</h2>
-                    <input type="text" id="sAt" placeholder="Buscar en nómina..." onkeyup="filterNomina()" class="border border-gray-300 rounded-md p-2 text-sm w-full md:w-64 focus:ring-amber-500 focus:border-amber-500">
+                    <h2 class="text-xl font-bold" style="color: var(--color-azul);">Nómina del Club</h2>
+                    <input type="text" id="sAt" placeholder="Buscar en nómina..." onkeyup="filterNomina()" class="border border-gray-300 rounded-md p-2 text-sm w-full md:w-64 focus:ring-amber-500 focus:border-amber-500 outline-none">
                 </div>
                 <div class="overflow-x-auto max-h-[600px] overflow-y-auto">
                     <table class="min-w-full divide-y divide-gray-200">
@@ -147,9 +147,10 @@ body {
 <script type="module">
 import{initializeApp as _0x1}from"https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
 import{getAuth as _0x2,onAuthStateChanged as _0x3,signOut as _0x4}from"https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-import{getFirestore as _0x5,collection as _0x6,doc as _0x7,onSnapshot as _0x8,query as _0x9,where as _0x10,getDoc as _0x11,addDoc as _0x12,updateDoc as _0x13,deleteDoc as _0x14}from"https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+import{getFirestore as _0x5,collection as _0x6,doc as _0x7,onSnapshot as _0x8,getDoc as _0x11,addDoc as _0x12,updateDoc as _0x13,deleteDoc as _0x14}from"https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-const _0xa=i=>document.getElementById(i);let _tD=null;let _aL=[];
+const _0xa=i=>document.getElementById(i);let _tD='esbalir_default';let _aL=[];
+
 const _0xc=()=>{
   const app=_0x1({
     apiKey: "AIzaSyBXtzQIu0q2TrfmasOtlahQHH8IxRXt8Xg",
@@ -164,24 +165,22 @@ const _0xc=()=>{
   _0x3(auth,async(u)=>{
     if(u){
       try{
-        // Intentamos buscar si el usuario tiene un teamId asignado en la colección 'users'
         const d=await _0x11(_0x7(db,'users',u.uid));
         if(d.exists() && d.data().teamId){
           _tD=d.data().teamId;
-        }else{
-          // Si no existe, se asigna uno por defecto automáticamente para permitir el funcionamiento
-          _tD='esbalir_default';
         }
 
-        const q=_0x9(_0x6(db,'club_athletes'),_0x10('clubId','==',_tD));
-        _0x8(q,(sn)=>{
+        // Lectura completa en tiempo real sin requerir índices compuestos
+        _0x8(_0x6(db,'club_athletes'),(sn)=>{
           _aL=[];
-          sn.forEach(x=>{_aL.push({id:x.id,...x.data()})});
+          sn.forEach(x=>{
+            const data=x.data();
+            _aL.push({id:x.id, ...data});
+          });
           renderTable(_aL);
         });
       }catch(e){
         console.error("Error al cargar datos del usuario:", e);
-        _tD='esbalir_default';
       }
     }else{
       location.href='index.html';
@@ -190,8 +189,6 @@ const _0xc=()=>{
 
   _0xa('aForm').addEventListener('submit',async(e)=>{
     e.preventDefault();
-    if(!_tD)_tD='esbalir_default';
-    
     const id=_0xa('aId').value;
     const data={
       clubId:_tD,
@@ -227,17 +224,17 @@ const _0xc=()=>{
 
 function renderTable(arr){
   const tb=_0xa('nTB');tb.innerHTML='';
-  if(!arr.length){tb.innerHTML='<tr><td colspan="5" class="text-center py-6 text-gray-500">No hay atletas registrados.</td></tr>';return;}
+  if(!arr.length){tb.innerHTML='<tr><td colspan="5" class="text-center py-6 text-gray-400 italic">No hay atletas registrados.</td></tr>';return;}
   arr.forEach(k=>{
     const tr=document.createElement('tr');
     tr.innerHTML=`
-      <td class="px-4 py-3 font-medium text-gray-900">${k.nombre} ${k.apellido}</td>
+      <td class="px-4 py-3 font-bold" style="color: var(--color-azul);">${k.nombre || ''} ${k.apellido || ''}</td>
       <td class="px-4 py-3 text-gray-600">${k.cedulaIdentidad||'N/A'}</td>
-      <td class="px-4 py-3 text-gray-600">${k.categoria||'N/A'}</td>
+      <td class="px-4 py-3 text-gray-600"><span class="px-2 py-0.5 bg-blue-50 text-blue-800 rounded font-bold text-xs">${k.categoria||'N/A'}</span></td>
       <td class="px-4 py-3 text-gray-600 font-bold">${k.nroCamiseta||'--'}</td>
       <td class="px-4 py-3 text-center space-x-2">
-        <button onclick="editAtleta('${k.id}')" class="text-blue-800 hover:text-blue-900 font-semibold text-xs bg-blue-50 px-2.5 py-1 rounded">Editar</button>
-        <button onclick="deleteAtleta('${k.id}')" class="text-red-600 hover:text-red-900 font-semibold text-xs bg-red-50 px-2.5 py-1 rounded">Eliminar</button>
+        <button onclick="editAtleta('${k.id}')" class="font-semibold text-xs px-2.5 py-1 rounded transition" style="background-color: #FEF3C7; color: #92400E;">Editar</button>
+        <button onclick="deleteAtleta('${k.id}')" class="text-red-600 hover:text-red-900 font-semibold text-xs bg-red-50 px-2.5 py-1 rounded transition">Eliminar</button>
       </td>`;
     tb.appendChild(tr);
   });
