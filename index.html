@@ -33,21 +33,27 @@ body {
             <form id="loginForm" class="space-y-4">
                 <div>
                     <label class="block text-sm font-semibold text-gray-700">Correo Electrónico</label>
-                    <input type="email" id="email" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-3 border focus:ring-amber-500 focus:border-amber-500">
+                    <input type="email" id="email" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-3 border focus:ring-amber-500 focus:border-amber-500 outline-none">
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-gray-700">Contraseña</label>
-                    <input type="password" id="password" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-3 border focus:ring-amber-500 focus:border-amber-500">
+                    <input type="password" id="password" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-3 border focus:ring-amber-500 focus:border-amber-500 outline-none">
                 </div>
                 <button type="submit" id="btnSubmit" class="w-full py-3 px-4 text-white font-bold rounded-lg shadow-md transition" style="background-color: var(--color-mostaza);">Ingresar</button>
+                
+                <div class="flex items-center justify-between text-sm pt-2">
+                    <button type="button" onclick="recuperarPassword()" class="text-blue-900 hover:underline font-semibold focus:outline-none">¿Olvidaste tu contraseña?</button>
+                </div>
+
                 <p id="errorMsg" class="text-red-500 text-sm text-center mt-2 hidden"></p>
+                <p id="successMsg" class="text-green-600 text-sm text-center mt-2 hidden"></p>
             </form>
         </div>
     </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 const app = initializeApp({
@@ -71,14 +77,49 @@ function getDeviceFingerprint() {
   return deviceId;
 }
 
+// Función global para solicitar el restablecimiento de contraseña
+window.recuperarPassword = async () => {
+  const email = document.getElementById('email').value.trim();
+  const errEl = document.getElementById('errorMsg');
+  const succEl = document.getElementById('successMsg');
+
+  errEl.classList.add('hidden');
+  succEl.classList.add('hidden');
+
+  if (!email) {
+    errEl.textContent = 'Por favor, introduce tu correo electrónico primero en el campo de arriba.';
+    errEl.classList.remove('hidden');
+    document.getElementById('email').focus();
+    return;
+  }
+
+  try {
+    await sendPasswordResetEmail(auth, email);
+    succEl.textContent = 'Correo de recuperación enviado. Revisa tu bandeja de entrada o spam.';
+    succEl.classList.remove('hidden');
+  } catch (err) {
+    console.error("Error al enviar correo de recuperación:", err);
+    let mensaje = err.message;
+    if (err.code === 'auth/user-not-found') {
+      mensaje = 'No existe una cuenta registrada con este correo.';
+    } else if (err.code === 'auth/invalid-email') {
+      mensaje = 'El formato del correo electrónico no es válido.';
+    }
+    errEl.textContent = 'Error: ' + mensaje;
+    errEl.classList.remove('hidden');
+  }
+};
+
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   const email = document.getElementById('email').value.trim();
   const password = document.getElementById('password').value;
   const errEl = document.getElementById('errorMsg');
+  const succEl = document.getElementById('successMsg');
   const btn = document.getElementById('btnSubmit');
   
   errEl.classList.add('hidden');
+  succEl.classList.add('hidden');
   btn.disabled = true;
   btn.textContent = 'Verificando...';
 
