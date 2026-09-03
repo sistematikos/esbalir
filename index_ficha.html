@@ -55,55 +55,58 @@ body {
             <input type="text" id="sAi" placeholder="Buscar por nombre o cédula..." onkeyup="fAl()" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-3 mb-6 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 border outline-none">
             
             <div id="aLc" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-[500px] overflow-y-auto pr-1">
-                <p id="lMs" class="col-span-full text-center py-8 text-gray-400 italic">Validando seguridad y cargando base de datos...</p>
+                <p id="lMs" class="col-span-full text-center py-8 text-gray-400 italic">Cargando nómina de atletas...</p>
             </div>
         </div>
     </div>
 
 <script type="module">
 window.addEventListener('keydown',function(e){if(e.keyCode==123||(e.ctrlKey&&e.shiftKey&&(e.keyCode==73||e.keyCode==74||e.keyCode==67))||(e.ctrlKey&&e.keyCode==85)){e.preventDefault();return false;}});
-import{initializeApp as _0x1}from"https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";import{getAuth as _0x2,onAuthStateChanged as _0x3,signOut as _0x4}from"https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";import{getFirestore as _0x5,collection as _0x6,doc as _0x7,onSnapshot as _0x8,query as _0x9,where as _0x10,getDoc as _0x11}from"https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+import{initializeApp as _0x1}from"https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+import{getAuth as _0x2,onAuthStateChanged as _0x3,signOut as _0x4}from"https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+import{getFirestore as _0x5,collection as _0x6,onSnapshot as _0x8}from"https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-const _0x0=['\x63\x6c\x75\x62\x5f\x61\x74\x68\x6c\x65\x74\x65\x73','\x75\x73\x65\x72\x7s','\x69\x6e\x64\x65\x78\x2e\x68\x74\x6d\x6c','\x63\x6c\x75\x62\x49\x64','\x69\x6e\x64\x65\x78\x5f\x64\x61\x74\x6f\x73\x2e\x68\x74\x6d\x6c\x3f\x69\x6d\x3d'];
-const _0xa=i=>document.getElementById(i);let _tD=null;let _aL=[];
+const _0xa=i=>document.getElementById(i);
+let _aL=[];
 
 const _0xb=i=>{if(!i)return'N/A';const a=new Date(i),o=new Date();let s=o.getFullYear()-a.getFullYear();return(o.getMonth()<a.getMonth()||o.getMonth()===a.getMonth()&&o.getDate()<a.getDate())&&s--,s};
 
 const _0xc=()=>{
-  const a=_0x1({
+  const app=_0x1({
     apiKey: "AIzaSyBXtzQIu0q2TrfmasOtlahQHH8IxRXt8Xg",
     authDomain: "esbalir-bc3ee.firebaseapp.com",
     projectId: "esbalir-bc3ee",
     storageBucket: "esbalir-bc3ee.firebasestorage.app",
     messagingSenderId: "679569110180",
     appId: "1:679569110180:web:9a27856b62acd717406231"
-  }),
-  s=_0x2(a),r=_0x5(a);
+  });
+  const auth=_0x2(app), db=_0x5(app);
 
-  _0x3(s,async(u)=>{
+  _0x3(auth,(u)=>{
     if(u){
       try{
-        const d=await _0x11(_0x7(r,'users',u.uid));
-        // Asignación automática segura para evitar expulsión si no existe el registro en users
-        _tD=d.exists()&&d.data().teamId?d.data().teamId:'esbalir_default';
-        
-        _0xa('lMs').innerText="Cargando nómina...";
-        const q=_0x9(_0x6(r,'club_athletes'),_0x10('clubId','==',_tD));
-        _0x8(q,(sn)=>{
+        // Escucha en tiempo real toda la colección sin requerir índices compuestos previos
+        _0x8(_0x6(db,'club_athletes'),(sn)=>{
           _aL=[];
-          sn.forEach(x=>{_aL.push({id:x.id,...x.data()})});
-          _rL(_aL)
+          sn.forEach(x=>{
+            const data = x.data();
+            // Filtramos opcionalmente por clubId o mostramos todos los registros disponibles
+            if(!data.clubId || data.clubId === 'esbalir_default' || data.clubId){
+              _aL.push({id:x.id, ...data});
+            }
+          });
+          _rL(_aL);
         });
       }catch(e){
-        console.error(e);
-        _tD='esbalir_default';
+        console.error("Error al obtener la base de datos:", e);
+        _0xa('lMs').innerText="Error al cargar los registros.";
       }
     }else{
       location.href='index.html';
     }
   });
 
-  window.logout=async()=>{await _0x4(s);localStorage.removeItem('currentClub');location.href='index.html';};
+  window.logout=async()=>{await _0x4(auth);localStorage.removeItem('currentClub');location.href='index.html';};
 };
 
 function _rL(p){
@@ -116,18 +119,18 @@ function _rL(p){
   p.forEach(k=>{
     const age=_0xb(k.fechaNacimiento);
     const h=`<div onclick="rT('${k.id}')" class="athlete-card cursor-pointer bg-white p-4 rounded-xl shadow-sm border border-gray-200 border-l-4" style="border-left-color: #D97706;">
-      <p class="text-lg font-extrabold text-blue-900">${k.nombre} ${k.apellido}</p>
+      <p class="text-lg font-extrabold" style="color: var(--color-azul);">${k.nombre || ''} ${k.apellido || ''}</p>
       <div class="mt-2 text-sm text-gray-600 space-y-1">
         <p><span class="font-semibold text-gray-700">CI:</span> ${k.cedulaIdentidad||'N/A'}</p>
         <p><span class="font-semibold text-gray-700">Edad:</span> ${age} años</p>
         <p><span class="font-semibold text-gray-700">Categoría:</span> <span class="px-2 py-0.5 bg-blue-50 text-blue-800 rounded font-bold text-xs">${k.categoria||'N/A'}</span></p>
       </div>
       <div class="mt-3 pt-2 border-t border-gray-100 flex justify-between items-center">
-        <span class="text-xs font-bold text-amber-600 uppercase tracking-wide">Ver Ficha Completa</span>
-        <span class="text-amber-600 font-bold">→</span>
+        <span class="text-xs font-bold uppercase tracking-wide" style="color: var(--color-mostaza);">Ver Ficha Completa</span>
+        <span class="font-bold" style="color: var(--color-mostaza);">→</span>
       </div>
     </div>`;
-    c.insertAdjacentHTML('beforeend',h);
+    c.insertAdjacentHTML('beforeend', h);
   });
 }
 
@@ -138,7 +141,6 @@ window.fAl=()=>{
 };
 
 window.rT=(id)=>{
-  // Mantiene la estructura de redirección original corregida con id=
   location.href='index_datos.html?id='+id;
 };
 
