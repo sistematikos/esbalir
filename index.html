@@ -3,23 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Acceso al Sistema - Esbalir</title>
+<title>Acceso - Esbalir</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
 <style>
 :root {
-  --color-azul: #1E3A8A;
-  --color-azul-oscuro: #0F172A;
+  --color-azul-electrico: #0047AB;
+  --color-azul-profundo: #1E40AF;
   --color-mostaza: #D97706;
-  --color-mostaza-hover: #B45309;
 }
 body {
   font-family: 'Inter', sans-serif;
-  background: linear-gradient(135deg, var(--color-azul) 0%, var(--color-azul-oscuro) 100%);
+  background: linear-gradient(135deg, var(--color-azul-electrico) 0%, var(--color-azul-profundo) 100%);
   min-height: 100vh;
 }
 .pattern-bg {
-  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px);
   background-size: 24px 24px;
 }
 .banner-top {
@@ -37,7 +36,7 @@ body {
 <body class="pattern-bg flex flex-col items-center justify-center p-4">
 
     <!-- Contenedor Principal -->
-    <div class="w-full max-w-md bg-white rounded-xl shadow-2xl overflow-hidden border border-white/10 my-auto">
+    <div class="w-full max-w-md bg-white rounded-xl shadow-2xl overflow-hidden border border-white/20 my-auto">
         
         <!-- Banner superior -->
         <div class="banner-top relative">
@@ -49,8 +48,8 @@ body {
         <!-- Formulario y Contenido -->
         <div class="p-8">
             <div class="text-center mb-6">
-                <h1 class="text-2xl font-black text-slate-900 tracking-tight">Portal de Gestión</h1>
-                <p class="text-xs text-slate-500 mt-1">Control de atletas, estadísticas y administración deportiva</p>
+                <h1 class="text-2xl font-black text-slate-900 tracking-tight">Esbalir - Escuela de Baloncesto</h1>
+                <p class="text-xs text-slate-600 mt-1 font-semibold">Control de Atletas y Administración Deportiva</p>
             </div>
 
             <form id="loginForm" class="space-y-4">
@@ -91,7 +90,7 @@ body {
         
         <!-- Pie de tarjeta -->
         <div class="bg-slate-50 px-8 py-3 border-t border-slate-100 text-center">
-            <p class="text-[11px] text-slate-400 font-medium">Sistema de Control y Estadísticas Deportivas</p>
+            <p class="text-[11px] text-slate-400 font-medium">Sistema de Gestión Esbalir</p>
         </div>
     </div>
 
