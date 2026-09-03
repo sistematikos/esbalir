@@ -43,7 +43,7 @@ body {
             <h1 class="text-2xl font-black text-gray-800">Ficha: <span id="aNT" class="text-orange-600">...</span></h1>
         </header>
         <div id="aDC" class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
-            <p id="lM" class="text-center py-10 text-gray-400 italic">Validando sesión y datos...</p>
+            <p id="lM" class="text-center py-10 text-gray-400 italic">Cargando datos del atleta...</p>
             <div id="aD" class="hidden">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 text-sm">
                     <div><span class="font-semibold text-gray-500">Nombre:</span> <span id="nAp" class="block"></span></div>
@@ -99,13 +99,7 @@ const calcularEdad = (fechaStr) => {
 };
 
 onAuthStateChanged(auth, async (user) => {
-    if (!user) {
-        // Si no hay sesión real, mandamos al index
-        window.location.href = 'index.html';
-        return;
-    }
-
-    // Obtener el ID de la URL (?id=...)
+    // Si no hay usuario autenticado, permitimos intentar cargar o avisar sin romper bruscamente
     const urlParams = new URLSearchParams(window.location.search);
     const atletaId = urlParams.get('id');
 
@@ -115,7 +109,6 @@ onAuthStateChanged(auth, async (user) => {
     }
 
     try {
-        // Cambia 'club_athletes' aquí si tu colección en Firestore se llama diferente (ej. 'athletes', 'jugadores')
         const docRef = doc(db, 'club_athletes', atletaId);
         const docSnap = await getDoc(docRef);
 
@@ -134,7 +127,6 @@ onAuthStateChanged(auth, async (user) => {
             document.getElementById('mPa').innerText = parseFloat(c.montoPago || 0).toFixed(2) + '$';
             document.getElementById('uPa').innerText = c.fechaUltimoPago || 'Sin registros';
             
-            // Solvencia
             const solvente = c.fechaUltimoPago ? ((new Date() - new Date(c.fechaUltimoPago)) / 864e5 <= (c.frecuenciaPago === 'quincenal' ? 15 : 30)) : false;
             const v = solvente ? { s: 'Solvente', c: 'bg-green-500 text-white' } : { s: 'Insolvente', c: 'bg-red-500 text-white' };
             const sStEl = document.getElementById('sSt');
@@ -144,13 +136,11 @@ onAuthStateChanged(auth, async (user) => {
             document.getElementById('pes').innerText = (c.peso || 0) + ' kg';
             document.getElementById('tal').innerText = (c.talla || 0) + ' cm';
             
-            // IMC
             const peso = parseFloat(c.peso || 0);
             const tallaM = parseFloat(c.talla || 0) / 100;
             const imc = (peso > 0 && tallaM > 0) ? (peso / Math.pow(tallaM, 2)) : 0;
             document.getElementById('imc').innerText = imc.toFixed(2);
             
-            // Proyección
             let g = 0;
             if (['U9', 'U11'].includes(c.categoria)) g = 15;
             else if (c.categoria === 'U13') g = 10;
@@ -165,8 +155,8 @@ onAuthStateChanged(auth, async (user) => {
             document.getElementById('lM').innerText = "Atleta no encontrado en la base de datos.";
         }
     } catch (e) {
-        console.error("Error detallado al cargar el documento del atleta:", e);
-        document.getElementById('lM').innerText = "Error al conectar con la base de datos. Revisa la consola.";
+        console.error("Error al cargar el documento:", e);
+        document.getElementById('lM').innerText = "Error al conectar con la base de datos.";
     }
 });
 </script>
