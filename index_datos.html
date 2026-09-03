@@ -43,7 +43,7 @@ body {
             <h1 class="text-2xl font-black text-gray-800">Ficha: <span id="aNT" class="text-orange-600">...</span></h1>
         </header>
         <div id="aDC" class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
-            <p id="lM" class="text-center py-10 text-gray-500 font-semibold italic">Iniciando sistema y leyendo parámetros...</p>
+            <p id="lM" class="text-center py-10 text-gray-500 font-semibold italic">Verificando sesión y cargando datos...</p>
             <div id="aD" class="hidden">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 text-sm">
                     <div><span class="font-semibold text-gray-500">Nombre:</span> <span id="nAp" class="block"></span></div>
@@ -75,12 +75,12 @@ import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/
 import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 const app = initializeApp({
-    apiKey: "AIzaSyB5RB7mm1j-0gjCNTUEJTkyEqLjyZ3C7ws",
-    authDomain: "datacontrolvoley-ff556.firebaseapp.com",
-    projectId: "datacontrolvoley-ff556",
-    storageBucket: "datacontrolvoley-ff556.firebasestorage.app",
-    messagingSenderId: "516409072606",
-    appId: "1:516409072606:web:132538dba358a077d71b4f"
+    apiKey: "AIzaSyBXtzQIu0q2TrfmasOtlahQHH8IxRXt8Xg",
+    authDomain: "esbalir-bc3ee.firebaseapp.com",
+    projectId: "esbalir-bc3ee",
+    storageBucket: "esbalir-bc3ee.firebasestorage.app",
+    messagingSenderId: "679569110180",
+    appId: "1:679569110180:web:9a27856b62acd717406231"
 });
 
 const auth = getAuth(app);
@@ -98,73 +98,73 @@ const calcularEdad = (fechaStr) => {
     return edad;
 };
 
-// Ejecución directa independiente de bloqueos de Auth para evitar redirecciones fantasma
-async function cargarDatosAtleta() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const atletaId = urlParams.get('id');
+const urlParams = new URLSearchParams(window.location.search);
+const atletaId = urlParams.get('id');
+const msgElement = document.getElementById('lM');
 
-    const msgElement = document.getElementById('lM');
-
-    if (!atletaId) {
-        msgElement.innerHTML = `⚠️ <b class="text-red-600">Error: No se encontró el parámetro 'id' en la URL.</b><br>URL actual: ${window.location.href}`;
-        return;
-    }
-
-    try {
-        msgElement.innerText = `Buscando documento con ID: ${atletaId}...`;
-        const docRef = doc(db, 'club_athletes', atletaId);
-        const docSnap = await getDoc(docRef);
-
-        if (docSnap.exists()) {
-            const c = docSnap.data();
-            
-            document.getElementById('aNT').innerText = (c.nombre || '') + ' ' + (c.apellido || '');
-            document.getElementById('nAp').innerText = (c.nombre || '') + ' ' + (c.apellido || '');
-            document.getElementById('cI').innerText = c.cedulaIdentidad || 'N/A';
-            document.getElementById('tel').innerText = c.telefono || 'N/A';
-            document.getElementById('fNa').innerText = c.fechaNacimiento || 'N/A';
-            document.getElementById('eda').innerText = calcularEdad(c.fechaNacimiento) + ' años';
-            document.getElementById('cat').innerText = c.categoria || 'N/A';
-            document.getElementById('nCa').innerText = c.nroCamiseta || 'N/A';
-            document.getElementById('nomT').innerText = c.frecuenciaPago === 'quincenal' ? '(Q)' : '(M)';
-            document.getElementById('mPa').innerText = parseFloat(c.montoPago || 0).toFixed(2) + '$';
-            document.getElementById('uPa').innerText = c.fechaUltimoPago || 'Sin registros';
-            
-            const solvente = c.fechaUltimoPago ? ((new Date() - new Date(c.fechaUltimoPago)) / 864e5 <= (c.frecuenciaPago === 'quincenal' ? 15 : 30)) : false;
-            const v = solvente ? { s: 'Solvente', c: 'bg-green-500 text-white' } : { s: 'Insolvente', c: 'bg-red-500 text-white' };
-            const sStEl = document.getElementById('sSt');
-            sStEl.innerText = v.s;
-            sStEl.className = 'text-xs font-bold px-3 py-1 rounded-full ' + v.c;
-
-            document.getElementById('pes').innerText = (c.peso || 0) + ' kg';
-            document.getElementById('tal').innerText = (c.talla || 0) + ' cm';
-            
-            const peso = parseFloat(c.peso || 0);
-            const tallaM = parseFloat(c.talla || 0) / 100;
-            const imc = (peso > 0 && tallaM > 0) ? (peso / Math.pow(tallaM, 2)) : 0;
-            document.getElementById('imc').innerText = imc.toFixed(2);
-            
-            let g = 0;
-            if (['U9', 'U11'].includes(c.categoria)) g = 15;
-            else if (c.categoria === 'U13') g = 10;
-            else if (c.categoria === 'U15') g = 6;
-            else if (c.categoria === 'U19') g = 2;
-            
-            document.getElementById('tPr').innerText = (c.talla > 0) ? ((parseFloat(c.talla) + g) / 100).toFixed(2) + ' m' : 'N/A';
-            
-            document.getElementById('lM').classList.add('hidden');
-            document.getElementById('aD').classList.remove('hidden');
-        } else {
-            msgElement.innerHTML = `❌ El documento con ID <code class="bg-gray-100 px-1 py-0.5 rounded">${atletaId}</code> no existe en la colección <code class="bg-gray-100 px-1 py-0.5 rounded">club_athletes</code>.`;
+if (!atletaId) {
+    msgElement.innerHTML = `⚠️ <b class="text-red-600">Error: No se encontró el parámetro 'id' en la URL.</b>`;
+} else {
+    // Esperamos a que Firebase valide la sesión activa antes de consultar Firestore
+    onAuthStateChanged(auth, async (user) => {
+        if (!user) {
+            msgElement.innerHTML = `❌ <span class="text-red-600">Sesión no detectada. Por favor vuelve a iniciar sesión.</span>`;
+            return;
         }
-    } catch (e) {
-        console.error("Error al cargar la ficha:", e);
-        msgElement.innerHTML = `❌ Error de conexión o permisos con Firebase:<br><span class="text-red-500 text-xs">${e.message}</span>`;
-    }
-}
 
-// Ejecutar directamente al cargar la página
-cargarDatosAtleta();
+        try {
+            msgElement.innerText = "Cargando información del atleta...";
+            const docRef = doc(db, 'club_athletes', atletaId);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+                const c = docSnap.data();
+                
+                document.getElementById('aNT').innerText = (c.nombre || '') + ' ' + (c.apellido || '');
+                document.getElementById('nAp').innerText = (c.nombre || '') + ' ' + (c.apellido || '');
+                document.getElementById('cI').innerText = c.cedulaIdentidad || 'N/A';
+                document.getElementById('tel').innerText = c.telefono || 'N/A';
+                document.getElementById('fNa').innerText = c.fechaNacimiento || 'N/A';
+                document.getElementById('eda').innerText = calcularEdad(c.fechaNacimiento) + ' años';
+                document.getElementById('cat').innerText = c.categoria || 'N/A';
+                document.getElementById('nCa').innerText = c.nroCamiseta || 'N/A';
+                document.getElementById('nomT').innerText = c.frecuenciaPago === 'quincenal' ? '(Q)' : '(M)';
+                document.getElementById('mPa').innerText = parseFloat(c.montoPago || 0).toFixed(2) + '$';
+                document.getElementById('uPa').innerText = c.fechaUltimoPago || 'Sin registros';
+                
+                const solvente = c.fechaUltimoPago ? ((new Date() - new Date(c.fechaUltimoPago)) / 864e5 <= (c.frecuenciaPago === 'quincenal' ? 15 : 30)) : false;
+                const v = solvente ? { s: 'Solvente', c: 'bg-green-500 text-white' } : { s: 'Insolvente', c: 'bg-red-500 text-white' };
+                const sStEl = document.getElementById('sSt');
+                sStEl.innerText = v.s;
+                sStEl.className = 'text-xs font-bold px-3 py-1 rounded-full ' + v.c;
+
+                document.getElementById('pes').innerText = (c.peso || 0) + ' kg';
+                document.getElementById('tal').innerText = (c.talla || 0) + ' cm';
+                
+                const peso = parseFloat(c.peso || 0);
+                const tallaM = parseFloat(c.talla || 0) / 100;
+                const imc = (peso > 0 && tallaM > 0) ? (peso / Math.pow(tallaM, 2)) : 0;
+                document.getElementById('imc').innerText = imc.toFixed(2);
+                
+                let g = 0;
+                if (['U9', 'U11'].includes(c.categoria)) g = 15;
+                else if (c.categoria === 'U13') g = 10;
+                else if (c.categoria === 'U15') g = 6;
+                else if (c.categoria === 'U19') g = 2;
+                
+                document.getElementById('tPr').innerText = (c.talla > 0) ? ((parseFloat(c.talla) + g) / 100).toFixed(2) + ' m' : 'N/A';
+                
+                document.getElementById('lM').classList.add('hidden');
+                document.getElementById('aD').classList.remove('hidden');
+            } else {
+                msgElement.innerHTML = `❌ El documento con ID <code class="bg-gray-100 px-1 py-0.5 rounded">${atletaId}</code> no existe en la base de datos.`;
+            }
+        } catch (e) {
+            console.error("Error al cargar la ficha:", e);
+            msgElement.innerHTML = `❌ Error de permisos o conexión:<br><span class="text-red-500 text-xs">${e.message}</span>`;
+        }
+    });
+}
 </script>
 </body>
 </html>
