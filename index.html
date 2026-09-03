@@ -43,7 +43,7 @@ body {
                     <label class="block text-sm font-semibold text-gray-700">Contraseña</label>
                     <input type="password" id="password" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-3 border focus:ring-amber-500 focus:border-amber-500">
                 </div>
-                <button type="submit" class="w-full py-3 px-4 text-white font-bold rounded-lg shadow-md transition" style="background-color: var(--color-mostaza);">Ingresar</button>
+                <button type="submit" id="btnSubmit" class="w-full py-3 px-4 text-white font-bold rounded-lg shadow-md transition" style="background-color: var(--color-mostaza);">Ingresar</button>
                 <p id="errorMsg" class="text-red-500 text-sm text-center mt-2 hidden"></p>
             </form>
         </div>
@@ -51,7 +51,7 @@ body {
 
 <script type="module">
 window.addEventListener('keydown',function(e){if(e.keyCode==123||(e.ctrlKey&&e.shiftKey&&(e.keyCode==73||e.keyCode==74||e.keyCode==67))||(e.ctrlKey&&e.keyCode==85)){e.preventDefault();return false;}});
-import{initializeApp as _0x1}from"https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";import{getAuth as _0x2,signInWithEmailAndPassword as _0x3,onAuthStateChanged as _0x4}from"https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+import{initializeApp as _0x1}from"https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";import{getAuth as _0x2,signInWithEmailAndPassword as _0x3,signOut as _0x4}from"https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";import{getFirestore as _0x5,doc as _0x6,getDoc as _0x7,setDoc as _0x8}from"https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 const _0xa=i=>document.getElementById(i);
 const app=_0x1({
@@ -62,24 +62,64 @@ const app=_0x1({
   messagingSenderId: "679569110180",
   appId: "1:679569110180:web:9a27856b62acd717406231"
 });
-const auth=_0x2(app);
+const auth=_0x2(app), db=_0x5(app);
 
-_0x4(auth,(u)=>{
-  if(u){location.href='index_menu.html';}
-});
+function getDeviceFingerprint() {
+  let deviceId = localStorage.getItem('esbalir_device_id');
+  if (!deviceId) {
+    deviceId = 'dev_' + Math.random().toString(36).substring(2) + Date.now().toString(36);
+    localStorage.setItem('esbalir_device_id', deviceId);
+  }
+  return deviceId;
+}
 
 _0xa('loginForm').addEventListener('submit',async(e)=>{
   e.preventDefault();
   const email=_0xa('email').value.trim();
   const password=_0xa('password').value;
   const errEl=_0xa('errorMsg');
+  const btn=_0xa('btnSubmit');
   errEl.classList.add('hidden');
+  btn.disabled=true;
+  btn.textContent='Verificando...';
+
   try{
-    await _0x3(auth,email,password);
-    location.href='index_menu.html';
+    const userCredential = await _0x3(auth,email,password);
+    const user = userCredential.user;
+    
+    // Si eres el admin principal (puedes cambiar este correo por el tuyo)
+    if(email === 'admin@esbalir.com') {
+      location.href='index_menu.html';
+      return;
+    }
+
+    const deviceId = getDeviceFingerprint();
+    const deviceRef = _0x6(db, 'authorized_devices', `${user.uid}_${deviceId}`);
+    const deviceSnap = await _0x7(deviceRef);
+
+    if (deviceSnap.exists() && deviceSnap.data().approved === true) {
+      location.href='index_menu.html';
+    } else {
+      await _0x8(deviceRef, {
+        userId: user.uid,
+        email: user.email,
+        deviceId: deviceId,
+        userAgent: navigator.userAgent,
+        approved: false,
+        requestedAt: new Date().toISOString()
+      }, { merge: true });
+
+      await _0x4(auth);
+      errEl.textContent='Este dispositivo no está autorizado por el administrador. Se ha registrado la solicitud.';
+      errEl.classList.remove('hidden');
+    }
   }catch(err){
+    console.error(err);
     errEl.textContent='Credenciales incorrectas o error de acceso.';
     errEl.classList.remove('hidden');
+  } finally {
+    btn.disabled=false;
+    btn.textContent='Ingresar';
   }
 });
 </script>
