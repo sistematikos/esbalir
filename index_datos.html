@@ -43,7 +43,7 @@ body {
             <h1 class="text-2xl font-black text-gray-800">Ficha: <span id="aNT" class="text-orange-600">...</span></h1>
         </header>
         <div id="aDC" class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
-            <p id="lM" class="text-center py-10 text-gray-400 italic">Cargando datos del atleta...</p>
+            <p id="lM" class="text-center py-10 text-gray-500 font-semibold italic">Iniciando sistema y leyendo parámetros...</p>
             <div id="aD" class="hidden">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 text-sm">
                     <div><span class="font-semibold text-gray-500">Nombre:</span> <span id="nAp" class="block"></span></div>
@@ -98,17 +98,20 @@ const calcularEdad = (fechaStr) => {
     return edad;
 };
 
-onAuthStateChanged(auth, async (user) => {
-    // Ya no expulsamos a nadie si hay un detalle con la sesión o el ID.
+// Ejecución directa independiente de bloqueos de Auth para evitar redirecciones fantasma
+async function cargarDatosAtleta() {
     const urlParams = new URLSearchParams(window.location.search);
     const atletaId = urlParams.get('id');
 
+    const msgElement = document.getElementById('lM');
+
     if (!atletaId) {
-        document.getElementById('lM').innerText = "Falta el ID del atleta en la URL.";
+        msgElement.innerHTML = `⚠️ <b class="text-red-600">Error: No se encontró el parámetro 'id' en la URL.</b><br>URL actual: ${window.location.href}`;
         return;
     }
 
     try {
+        msgElement.innerText = `Buscando documento con ID: ${atletaId}...`;
         const docRef = doc(db, 'club_athletes', atletaId);
         const docSnap = await getDoc(docRef);
 
@@ -152,13 +155,16 @@ onAuthStateChanged(auth, async (user) => {
             document.getElementById('lM').classList.add('hidden');
             document.getElementById('aD').classList.remove('hidden');
         } else {
-            document.getElementById('lM').innerText = "El atleta no existe en la base de datos.";
+            msgElement.innerHTML = `❌ El documento con ID <code class="bg-gray-100 px-1 py-0.5 rounded">${atletaId}</code> no existe en la colección <code class="bg-gray-100 px-1 py-0.5 rounded">club_athletes</code>.`;
         }
     } catch (e) {
         console.error("Error al cargar la ficha:", e);
-        document.getElementById('lM').innerText = "Error de conexión al cargar la ficha. Revisa la consola.";
+        msgElement.innerHTML = `❌ Error de conexión o permisos con Firebase:<br><span class="text-red-500 text-xs">${e.message}</span>`;
     }
-});
+}
+
+// Ejecutar directamente al cargar la página
+cargarDatosAtleta();
 </script>
 </body>
 </html>
