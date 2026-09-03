@@ -85,12 +85,10 @@ const _0xc=()=>{
   _0x3(auth,(u)=>{
     if(u){
       try{
-        // Escucha en tiempo real toda la colección sin requerir índices compuestos previos
         _0x8(_0x6(db,'club_athletes'),(sn)=>{
           _aL=[];
           sn.forEach(x=>{
             const data = x.data();
-            // Filtramos opcionalmente por clubId o mostramos todos los registros disponibles
             if(!data.clubId || data.clubId === 'esbalir_default' || data.clubId){
               _aL.push({id:x.id, ...data});
             }
@@ -118,7 +116,12 @@ function _rL(p){
   }
   p.forEach(k=>{
     const age=_0xb(k.fechaNacimiento);
-    const h=`<div onclick="rT('${k.id}')" class="athlete-card cursor-pointer bg-white p-4 rounded-xl shadow-sm border border-gray-200 border-l-4" style="border-left-color: #D97706;">
+    // Creamos la tarjeta usando DOM estructurado en lugar de un onclick inseguro en cadena de texto
+    const card = document.createElement('div');
+    card.className = "athlete-card cursor-pointer bg-white p-4 rounded-xl shadow-sm border border-gray-200 border-l-4";
+    card.style.borderLeftColor = "#D97706";
+    
+    card.innerHTML = `
       <p class="text-lg font-extrabold" style="color: var(--color-azul);">${k.nombre || ''} ${k.apellido || ''}</p>
       <div class="mt-2 text-sm text-gray-600 space-y-1">
         <p><span class="font-semibold text-gray-700">CI:</span> ${k.cedulaIdentidad||'N/A'}</p>
@@ -129,8 +132,14 @@ function _rL(p){
         <span class="text-xs font-bold uppercase tracking-wide" style="color: var(--color-mostaza);">Ver Ficha Completa</span>
         <span class="font-bold" style="color: var(--color-mostaza);">→</span>
       </div>
-    </div>`;
-    c.insertAdjacentHTML('beforeend', h);
+    `;
+
+    // Asociamos el evento de forma limpia y directa al elemento creado
+    card.addEventListener('click', () => {
+      window.location.href = 'index_datos.html?id=' + k.id;
+    });
+
+    c.appendChild(card);
   });
 }
 
@@ -138,10 +147,6 @@ window.fAl=()=>{
   const t=_0xa('sAi').value.toLowerCase();
   const f=_aL.filter(x=>(x.nombre+' '+x.apellido).toLowerCase().includes(t)||(x.cedulaIdentidad&&x.cedulaIdentidad.toString().includes(t)));
   _rL(f);
-};
-
-window.rT=(id)=>{
-  location.href='index_datos.html?id='+id;
 };
 
 _0xc();
