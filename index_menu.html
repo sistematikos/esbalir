@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Menú Principal - Esbalir Voleibol</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
@@ -49,21 +49,9 @@ body {
             <p class="text-gray-600 text-sm">Selecciona una tarjeta para acceder al módulo correspondiente.</p>
         </div>
 
-        <!-- Grid de Tarjetas (Manteniendo el diseño modular) -->
+        <!-- Grid de Tarjetas (Sin dispositivos ni estadísticas) -->
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             
-            <!-- Tarjeta: Control de Dispositivos (Administración de accesos) -->
-            <a href="index_admin_devices.html" class="bg-white p-6 rounded-xl shadow-md border border-gray-100 hover:shadow-xl hover:border-amber-400 transition transform hover:-translate-y-1 flex flex-col justify-between group">
-                <div>
-                    <div class="w-12 h-12 rounded-lg bg-amber-50 flex items-center justify-center mb-4 group-hover:bg-amber-100 transition" style="color: var(--color-mostaza);">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                    </div>
-                    <h3 class="text-lg font-bold text-gray-800 mb-1">Dispositivos</h3>
-                    <p class="text-xs text-gray-500">Aprobar o bloquear equipos y navegadores de acceso.</p>
-                </div>
-                <span class="mt-6 text-xs font-bold uppercase tracking-wider flex items-center" style="color: var(--color-mostaza);">Acceder &rarr;</span>
-            </a>
-
             <!-- Tarjeta: Atletas -->
             <a href="index_atletas.html" class="bg-white p-6 rounded-xl shadow-md border border-gray-100 hover:shadow-xl hover:border-blue-300 transition transform hover:-translate-y-1 flex flex-col justify-between group">
                 <div>
@@ -84,18 +72,6 @@ body {
                     </div>
                     <h3 class="text-lg font-bold text-gray-800 mb-1">Fichas</h3>
                     <p class="text-xs text-gray-500">Consulta y control de fichas individuales.</p>
-                </div>
-                <span class="mt-6 text-xs font-bold uppercase tracking-wider text-blue-800 flex items-center">Acceder &rarr;</span>
-            </a>
-
-            <!-- Tarjeta: Estadísticas -->
-            <a href="index_estad.html" class="bg-white p-6 rounded-xl shadow-md border border-gray-100 hover:shadow-xl hover:border-blue-300 transition transform hover:-translate-y-1 flex flex-col justify-between group">
-                <div>
-                    <div class="w-12 h-12 rounded-lg bg-blue-50 flex items-center justify-center mb-4 group-hover:bg-blue-100 transition text-blue-900">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-                    </div>
-                    <h3 class="text-lg font-bold text-gray-800 mb-1">Estadísticas</h3>
-                    <p class="text-xs text-gray-500">Métricas y reportes de rendimiento.</p>
                 </div>
                 <span class="mt-6 text-xs font-bold uppercase tracking-wider text-blue-800 flex items-center">Acceder &rarr;</span>
             </a>
