@@ -73,27 +73,31 @@ const _0xc=()=>{
   _0x3(auth,async(u)=>{
     if(u){
       try{
-        const d=await _0x11(_0x7(db,'users',u.uid));
+        const userDocRef = _0x7(db,'users',u.uid);
+        const d = await _0x11(userDocRef);
+        
         if(d.exists() && d.data().teamId){
           _tD=d.data().teamId;
         }
 
-        // Lectura completa en tiempo real sin requerir índices compuestos
+        // Lectura completa en tiempo real de los atletas
         _0x8(_0x6(db,'club_athletes'),(sn)=>{
           const list=[];
           const currentMonth=new Date().getMonth()+1;
           sn.forEach(x=>{
             const data=x.data();
-            // Opcional: filtrar por club si corresponde o mostrar todos
             if(data.fechaNacimiento){
               const m=parseInt(data.fechaNacimiento.split('-')[1],10);
               if(m===currentMonth){list.push(data);}
             }
           });
           renderCumples(list);
+        },(error)=>{
+          console.error("Error en el snapshot de atletas:", error);
         });
       }catch(e){
-        console.error("Error al cargar datos del usuario:", e);
+        console.error("Error crítico al inicializar sesión o datos:", e);
+        // Ya no redirigimos al login automáticamente aquí para evitar expulsiones por errores menores de lectura
       }
     }else{
       location.href='index.html';
