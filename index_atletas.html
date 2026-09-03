@@ -226,7 +226,15 @@ const _0xc=()=>{
 function renderTable(arr){
   const tb=_0xa('nTB');tb.innerHTML='';
   if(!arr.length){tb.innerHTML='<tr><td colspan="6" class="text-center py-6 text-gray-400 italic">No hay atletas registrados.</td></tr>';return;}
-  arr.forEach(k=>{
+
+  // Ordenar por fecha de nacimiento (de menor a mayor / del más viejo al más joven)
+  const sortedArr = [...arr].sort((a, b) => {
+    if (!a.fechaNacimiento) return 1;
+    if (!b.fechaNacimiento) return -1;
+    return new Date(a.fechaNacimiento) - new Date(b.fechaNacimiento);
+  });
+
+  sortedArr.forEach(k=>{
     const tr=document.createElement('tr');
     tr.innerHTML=`
       <td class="px-4 py-3 font-bold" style="color: var(--color-azul);">${k.nombre || ''} ${k.apellido || ''}</td>
