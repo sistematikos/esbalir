@@ -1,1 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Menú Principal - Esbalir</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --color-azul: #1E3A8A;
+  --color-mostaza: #D97706;
+  --bg-claro: #F9FAFB;
+}
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-claro);
+}
+</style>
+</head>
+<body>
+    <div class="min-h-screen flex flex-col">
+        <!-- Barra superior -->
+        <header class="bg-white shadow-sm border-b border-gray-200 p-4">
+            <div class="container mx-auto flex justify-between items-center">
+                <h1 class="text-xl font-black" style="color: var(--color-azul);">Esbalir - Menú Principal</h1>
+                <div class="flex items-center space-x-4">
+                    <span id="userEmail" class="text-sm font-semibold text-gray-600 hidden md:inline"></span>
+                    <button id="btnLogout" class="py-2 px-4 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 shadow-sm transition text-sm">Cerrar Sesión</button>
+                </div>
+            </div>
+        </header>
 
+        <!-- Contenido Principal -->
+        <main class="container mx-auto p-4 md:p-8 flex-grow">
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-gray-800">Bienvenido al Sistema</h2>
+                <p class="text-gray-600">Selecciona una opción para gestionar la plataforma.</p>
+            </div>
+
+            <!-- Tarjetas del Menú -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Enlace al Panel de Dispositivos -->
+                <a href="index_admin_devices.html" class="bg-white p-6 rounded-xl shadow-md border border-gray-100 hover:shadow-lg transition flex flex-col justify-between group">
+                    <div>
+                        <div class="w-12 h-12 rounded-lg bg-amber-50 flex items-center justify-center mb-4 group-hover:bg-amber-100 transition" style="color: var(--color-mostaza);">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-800 mb-2">Control de Dispositivos</h3>
+                        <p class="text-sm text-gray-500">Aprueba o bloquea los navegadores y equipos que intentan acceder al sistema.</p>
+                    </div>
+                    <span class="mt-4 text-sm font-semibold flex items-center" style="color: var(--color-mostaza);">Gestionar accesos &rarr;</span>
+                </a>
+
+                <!-- Espacios para otros módulos futuros (Atletas, Estadísticas, etc.) -->
+                <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 opacity-60">
+                    <div class="w-12 h-12 rounded-lg bg-blue-50 flex items-center justify-center mb-4 text-blue-900">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2">Atletas / Registros</h3>
+                    <p class="text-sm text-gray-500">Próximamente sección de atletas y planillas.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+
+const app = initializeApp({
+  apiKey: "AIzaSyBXtzQIu0q2TrfmasOtlahQHH8IxRXt8Xg",
+  authDomain: "esbalir-bc3ee.firebaseapp.com",
+  projectId: "esbalir-bc3ee",
+  storageBucket: "esbalir-bc3ee.firebasestorage.app",
+  messagingSenderId: "679569110180",
+  appId: "1:679569110180:web:9a27856b62acd717406231"
+});
+
+const auth = getAuth(app);
+
+// Validación de sesión activa
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    document.getElementById('userEmail').textContent = user.email;
+  } else {
+    // Si no hay sesión, redirige al login
+    location.href = 'index.html';
+  }
+});
+
+// Botón de salir
+document.getElementById('btnLogout').addEventListener('click', async () => {
+  await signOut(auth);
+  location.href = 'index.html';
+});
+</script>
+</body>
+</html>
