@@ -99,12 +99,12 @@ const calcularEdad = (fechaStr) => {
 };
 
 onAuthStateChanged(auth, async (user) => {
-    // Si no hay usuario autenticado, permitimos intentar cargar o avisar sin romper bruscamente
+    // Ya no expulsamos a nadie si hay un detalle con la sesión o el ID.
     const urlParams = new URLSearchParams(window.location.search);
     const atletaId = urlParams.get('id');
 
     if (!atletaId) {
-        document.getElementById('lM').innerText = "No se especificó el ID del atleta en la URL.";
+        document.getElementById('lM').innerText = "Falta el ID del atleta en la URL.";
         return;
     }
 
@@ -152,11 +152,11 @@ onAuthStateChanged(auth, async (user) => {
             document.getElementById('lM').classList.add('hidden');
             document.getElementById('aD').classList.remove('hidden');
         } else {
-            document.getElementById('lM').innerText = "Atleta no encontrado en la base de datos.";
+            document.getElementById('lM').innerText = "El atleta no existe en la base de datos.";
         }
     } catch (e) {
-        console.error("Error al cargar el documento:", e);
-        document.getElementById('lM').innerText = "Error al conectar con la base de datos.";
+        console.error("Error al cargar la ficha:", e);
+        document.getElementById('lM').innerText = "Error de conexión al cargar la ficha. Revisa la consola.";
     }
 });
 </script>
