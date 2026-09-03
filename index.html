@@ -5,16 +5,16 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Iniciar Sesión - Esbalir</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
 :root {
-  --c1: #1E293B; /* Azul Oscuro / Pizarra */
-  --c2: #F97316; /* Naranja Baloncesto */
-  --bg: #F8FAFC;
+  --color-azul: #1E3A8A;
+  --color-mostaza: #D97706;
+  --bg-claro: #F9FAFB;
 }
 body {
   font-family: 'Inter', sans-serif;
-  background-color: var(--bg);
+  background-color: var(--bg-claro);
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -32,18 +32,18 @@ body {
 <body oncontextmenu="return false">
     <div class="banner-header"></div>
     <div class="container mx-auto p-4 flex items-center justify-center min-h-[60vh]">
-        <div class="bg-white p-8 rounded-xl shadow-xl w-full max-w-md border border-gray-100">
-            <h1 class="text-2xl font-black text-gray-800 mb-6 text-center">Acceso al Sistema</h1>
+        <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md border border-gray-100">
+            <h1 class="text-2xl font-black mb-6 text-center" style="color: var(--color-azul);">Acceso al Sistema</h1>
             <form id="loginForm" class="space-y-4">
                 <div>
                     <label class="block text-sm font-semibold text-gray-700">Correo Electrónico</label>
-                    <input type="email" id="email" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-3 border focus:ring-orange-500 focus:border-orange-500">
+                    <input type="email" id="email" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-3 border focus:ring-amber-500 focus:border-amber-500">
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-gray-700">Contraseña</label>
-                    <input type="password" id="password" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-3 border focus:ring-orange-500 focus:border-orange-500">
+                    <input type="password" id="password" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-3 border focus:ring-amber-500 focus:border-amber-500">
                 </div>
-                <button type="submit" class="w-full py-3 px-4 bg-orange-600 text-white font-bold rounded-lg hover:bg-orange-700 shadow-md transition">Ingresar</button>
+                <button type="submit" class="w-full py-3 px-4 text-white font-bold rounded-lg shadow-md transition" style="background-color: var(--color-mostaza);">Ingresar</button>
                 <p id="errorMsg" class="text-red-500 text-sm text-center mt-2 hidden"></p>
             </form>
         </div>
