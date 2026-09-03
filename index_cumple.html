@@ -52,9 +52,13 @@ body {
 
 <script type="module">
 window.addEventListener('keydown',function(e){if(e.keyCode==123||(e.ctrlKey&&e.shiftKey&&(e.keyCode==73||e.keyCode==74||e.keyCode==67))||(e.ctrlKey&&e.keyCode==85)){e.preventDefault();return false;}});
-import{initializeApp as _0x1}from"https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";import{getAuth as _0x2,onAuthStateChanged as _0x3,signOut as _0x4}from"https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";import{getFirestore as _0x5,collection as _0x6,doc as _0x7,onSnapshot as _0x8,query as _0x9,where as _0x10,getDoc as _0x11}from"https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+import{initializeApp as _0x1}from"https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+import{getAuth as _0x2,onAuthStateChanged as _0x3,signOut as _0x4}from"https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+import{getFirestore as _0x5,collection as _0x6,doc as _0x7,onSnapshot as _0x8,getDoc as _0x11}from"https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 const _0xa=i=>document.getElementById(i);
+let _tD='esbalir_default';
+
 const _0xc=()=>{
   const app=_0x1({
     apiKey: "AIzaSyBXtzQIu0q2TrfmasOtlahQHH8IxRXt8Xg",
@@ -65,33 +69,37 @@ const _0xc=()=>{
     appId: "1:679569110180:web:9a27856b62acd717406231"
   });
   const auth=_0x2(app),db=_0x5(app);
+
   _0x3(auth,async(u)=>{
     if(u){
       try{
         const d=await _0x11(_0x7(db,'users',u.uid));
-        const tD=d.exists()?d.data().teamId:null;
-        if(tD){
-          const q=_0x9(_0x6(db,'club_athletes'),_0x10('clubId','==',tD));
-          _0x8(q,(sn)=>{
-            const list=[];
-            const currentMonth=new Date().getMonth()+1;
-            sn.forEach(x=>{
-              const data=x.data();
-              if(data.fechaNacimiento){
-                const m=parseInt(data.fechaNacimiento.split('-')[1],10);
-                if(m===currentMonth){list.push(data);}
-              }
-            });
-            renderCumples(list);
-          });
-        }else{
-          _0x4(auth);location.href='index.html';
+        if(d.exists() && d.data().teamId){
+          _tD=d.data().teamId;
         }
-      }catch(e){console.error(e);}
+
+        // Lectura completa en tiempo real sin requerir índices compuestos
+        _0x8(_0x6(db,'club_athletes'),(sn)=>{
+          const list=[];
+          const currentMonth=new Date().getMonth()+1;
+          sn.forEach(x=>{
+            const data=x.data();
+            // Opcional: filtrar por club si corresponde o mostrar todos
+            if(data.fechaNacimiento){
+              const m=parseInt(data.fechaNacimiento.split('-')[1],10);
+              if(m===currentMonth){list.push(data);}
+            }
+          });
+          renderCumples(list);
+        });
+      }catch(e){
+        console.error("Error al cargar datos del usuario:", e);
+      }
     }else{
       location.href='index.html';
     }
   });
+
   window.logout=async()=>{await _0x4(auth);localStorage.removeItem('currentClub');location.href='index.html';};
 };
 
@@ -102,8 +110,10 @@ function renderCumples(list){
     return;
   }
   list.forEach(k=>{
-    const [,m,d]=k.fechaNacimiento.split('-');
-    const card=`<div class="bg-amber-50 border-l-4 border-amber-600 p-4 rounded-lg shadow-sm flex items-center justify-between"><div><p class="text-lg font-bold text-gray-800">${k.nombre} ${k.apellido}</p><p class="text-sm text-gray-600">Categoría: ${k.categoria||'N/A'}</p></div><div class="text-right bg-white px-3 py-2 rounded shadow-inner border border-amber-100"><span class="block text-xs font-bold text-amber-700 uppercase">Día</span><span class="text-xl font-black text-gray-800">${d}/${m}</span></div></div>`;
+    const parts = k.fechaNacimiento ? k.fechaNacimiento.split('-') : [];
+    const m = parts[1] || '00';
+    const d = parts[2] || '00';
+    const card=`<div class="bg-amber-50 border-l-4 border-amber-600 p-4 rounded-lg shadow-sm flex items-center justify-between"><div><p class="text-lg font-bold text-gray-800">${k.nombre || ''} ${k.apellido || ''}</p><p class="text-sm text-gray-600">Categoría: ${k.categoria||'N/A'}</p></div><div class="text-right bg-white px-3 py-2 rounded shadow-inner border border-amber-100"><span class="block text-xs font-bold text-amber-700 uppercase">Día</span><span class="text-xl font-black text-gray-800">${d}/${m}</span></div></div>`;
     container.insertAdjacentHTML('beforeend',card);
   });
 }
