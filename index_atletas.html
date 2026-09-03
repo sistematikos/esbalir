@@ -130,13 +130,14 @@ body {
                             <tr>
                                 <th class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase">Atleta</th>
                                 <th class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase">Cédula</th>
+                                <th class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase">Nacimiento</th>
                                 <th class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase">Cat.</th>
                                 <th class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase">Camiseta</th>
                                 <th class="px-4 py-3 text-center text-xs font-bold text-gray-600 uppercase">Acciones</th>
                             </tr>
                         </thead>
                         <tbody id="nTB" class="bg-white divide-y divide-gray-100 text-sm">
-                            <tr><td colspan="5" class="text-center py-6 text-gray-400 italic">Cargando nómina...</td></tr>
+                            <tr><td colspan="6" class="text-center py-6 text-gray-400 italic">Cargando nómina...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -224,12 +225,13 @@ const _0xc=()=>{
 
 function renderTable(arr){
   const tb=_0xa('nTB');tb.innerHTML='';
-  if(!arr.length){tb.innerHTML='<tr><td colspan="5" class="text-center py-6 text-gray-400 italic">No hay atletas registrados.</td></tr>';return;}
+  if(!arr.length){tb.innerHTML='<tr><td colspan="6" class="text-center py-6 text-gray-400 italic">No hay atletas registrados.</td></tr>';return;}
   arr.forEach(k=>{
     const tr=document.createElement('tr');
     tr.innerHTML=`
       <td class="px-4 py-3 font-bold" style="color: var(--color-azul);">${k.nombre || ''} ${k.apellido || ''}</td>
       <td class="px-4 py-3 text-gray-600">${k.cedulaIdentidad||'N/A'}</td>
+      <td class="px-4 py-3 text-gray-600">${k.fechaNacimiento||'N/A'}</td>
       <td class="px-4 py-3 text-gray-600"><span class="px-2 py-0.5 bg-blue-50 text-blue-800 rounded font-bold text-xs">${k.categoria||'N/A'}</span></td>
       <td class="px-4 py-3 text-gray-600 font-bold">${k.nroCamiseta||'--'}</td>
       <td class="px-4 py-3 text-center space-x-2">
