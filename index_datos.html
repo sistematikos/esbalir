@@ -5,16 +5,17 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title id="pT">Ficha Atleta - Baloncesto</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
 <style>
 :root {
-  --m: #7C2D12;   /* Naranja oscuro / Óxido corporativo */
-  --e: #EA580C;   /* Naranja vibrante para baloncesto */
-  --f: #FFF7ED;   /* Fondo claro cálido */
+  --e-blue: #2563EB;      /* Azul eléctrico principal */
+  --e-blue-dark: #1D4ED8; /* Azul eléctrico profundo */
+  --e-glow: rgba(37, 99, 235, 0.25);
+  --bg-slate: #F8FAFC;    /* Fondo moderno tipo panel */
 }
 body {
   font-family: 'Inter', sans-serif;
-  background: var(--f);
+  background: var(--bg-slate);
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -27,41 +28,49 @@ body {
   min-height: 200px;
   width: 100%;
 }
-.m-c {
-  background: #fffbf5;
-  border-left: 4px solid var(--e);
+.metric-card {
+  background: #ffffff;
+  border-left: 4px solid var(--e-blue);
+  transition: all 0.2s ease-in-out;
+}
+.metric-card:hover {
+  box-shadow: 0 10px 25px -5px var(--e-glow);
+  transform: translateY(-2px);
 }
 </style>
 </head>
 <body oncontextmenu="return false">
     <div class="b-h"></div>
-    <div class="container mx-auto p-4">
-        <header class="mb-6 flex items-center border-b pb-4">
-            <a href="index_ficha.html" class="text-gray-500 hover:text-orange-600 transition mr-4">
+    <div class="container mx-auto p-4 md:p-8">
+        <header class="mb-6 flex items-center border-b border-gray-200 pb-4">
+            <a href="index_ficha.html" class="text-gray-400 hover:text-blue-600 transition mr-4 p-2 rounded-lg hover:bg-blue-50">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 15l-3-3m0 0l3-3m-3 3h8M3 12a9 9 0 1118 0 9 9 0 01-18 0z"/></svg>
             </a>
-            <h1 class="text-2xl font-black text-gray-800">Ficha: <span id="aNT" class="text-orange-600">...</span></h1>
+            <h1 class="text-2xl md:text-3xl font-black text-slate-800">Ficha Técnica: <span id="aNT" class="text-blue-600">...</span></h1>
         </header>
-        <div id="aDC" class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
-            <p id="lM" class="text-center py-10 text-gray-500 font-semibold italic">Verificando sesión y cargando datos...</p>
+
+        <div id="aDC" class="bg-white p-6 md:p-8 rounded-2xl shadow-xl border border-slate-100">
+            <p id="lM" class="text-center py-12 text-slate-400 font-semibold italic">Verificando sesión y sincronizando datos...</p>
+            
             <div id="aD" class="hidden">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 text-sm">
-                    <div><span class="font-semibold text-gray-500">Nombre:</span> <span id="nAp" class="block"></span></div>
-                    <div><span class="font-semibold text-gray-500">Cédula:</span> <span id="cI" class="block"></span></div>
-                    <div><span class="font-semibold text-gray-500">Teléfono:</span> <span id="tel" class="block"></span></div>
-                    <div><span class="font-semibold text-gray-500">Nacimiento:</span> <span id="fNa" class="block"></span></div>
-                    <div><span class="font-semibold text-gray-500">Edad:</span> <span id="eda" class="text-orange-700 font-bold block"></span></div>
-                    <div><span class="font-semibold text-gray-500">Categoría:</span> <span id="cat" class="text-orange-600 font-bold block"></span></div>
-                    <div><span class="font-semibold text-gray-500">Camiseta:</span> <span id="nCa" class="text-amber-600 font-black text-xl block"></span></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 text-sm bg-slate-50 p-6 rounded-xl border border-slate-100">
+                    <div><span class="font-semibold text-slate-400 uppercase text-xs tracking-wider block mb-1">Nombre Completo</span> <span id="nAp" class="text-base font-bold text-slate-700 block"></span></div>
+                    <div><span class="font-semibold text-slate-400 uppercase text-xs tracking-wider block mb-1">Cédula de Identidad</span> <span id="cI" class="text-base font-medium text-slate-700 block"></span></div>
+                    <div><span class="font-semibold text-slate-400 uppercase text-xs tracking-wider block mb-1">Teléfono</span> <span id="tel" class="text-base font-medium text-slate-700 block"></span></div>
+                    <div><span class="font-semibold text-slate-400 uppercase text-xs tracking-wider block mb-1">Fecha de Nacimiento</span> <span id="fNa" class="text-base font-medium text-slate-700 block"></span></div>
+                    <div><span class="font-semibold text-slate-400 uppercase text-xs tracking-wider block mb-1">Edad Actual</span> <span id="eda" class="text-blue-600 font-extrabold text-base block"></span></div>
+                    <div><span class="font-semibold text-slate-400 uppercase text-xs tracking-wider block mb-1">Categoría</span> <span id="cat" class="text-blue-700 font-extrabold text-base block"></span></div>
+                    <div><span class="font-semibold text-slate-400 uppercase text-xs tracking-wider block mb-1">Nro. de Camiseta</span> <span id="nCa" class="text-blue-600 font-black text-2xl block"></span></div>
                 </div>
+
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div class="m-c p-4 rounded-lg"><p class="text-xs font-bold uppercase">Monto <span id="nomT"></span></p><p id="mPa" class="text-2xl font-black"></p></div>
-                    <div class="m-c p-4 rounded-lg"><p class="text-xs font-bold uppercase">Último Pago</p><p id="uPa" class="text-sm font-bold mt-2"></p></div>
-                    <div class="m-c p-4 rounded-lg"><p class="text-xs font-bold uppercase mb-2">Solvencia</p><span id="sSt" class="text-xs font-bold px-3 py-1 rounded-full"></span></div>
-                    <div class="m-c p-4 rounded-lg"><p class="text-xs font-bold uppercase">IMC</p><p id="imc" class="text-2xl font-black"></p><span id="iSt" class="text-[10px] font-bold px-2 py-0.5 rounded uppercase"></span></div>
-                    <div class="m-c p-4 rounded-lg"><p class="text-xs font-bold uppercase">Peso</p><p id="pes" class="text-2xl font-black"></p></div>
-                    <div class="m-c p-4 rounded-lg"><p class="text-xs font-bold uppercase">Talla</p><p id="tal" class="text-2xl font-black"></p></div>
-                    <div class="m-c p-4 rounded-lg bg-orange-50"><p class="text-xs text-orange-700 font-bold uppercase">Proyección</p><p id="tPr" class="text-2xl font-black text-orange-800"></p></div>
+                    <div class="metric-card p-4 rounded-xl shadow-sm"><p class="text-xs font-bold text-slate-400 uppercase">Monto <span id="nomT"></span></p><p id="mPa" class="text-2xl font-black text-slate-800 mt-1"></p></div>
+                    <div class="metric-card p-4 rounded-xl shadow-sm"><p class="text-xs font-bold text-slate-400 uppercase">Último Pago</p><p id="uPa" class="text-sm font-bold text-slate-700 mt-2"></p></div>
+                    <div class="metric-card p-4 rounded-xl shadow-sm"><p class="text-xs font-bold text-slate-400 uppercase mb-2">Solvencia</p><span id="sSt" class="text-xs font-bold px-3 py-1.5 rounded-full inline-block"></span></div>
+                    <div class="metric-card p-4 rounded-xl shadow-sm"><p class="text-xs font-bold text-slate-400 uppercase">IMC</p><p id="imc" class="text-2xl font-black text-slate-800 mt-1"></p></div>
+                    <div class="metric-card p-4 rounded-xl shadow-sm"><p class="text-xs font-bold text-slate-400 uppercase">Peso</p><p id="pes" class="text-2xl font-black text-slate-800 mt-1"></p></div>
+                    <div class="metric-card p-4 rounded-xl shadow-sm"><p class="text-xs font-bold text-slate-400 uppercase">Talla</p><p id="tal" class="text-2xl font-black text-slate-800 mt-1"></p></div>
+                    <div class="metric-card p-4 rounded-xl shadow-sm bg-blue-50/50" style="border-left-color: #1D4ED8;"><p class="text-xs font-bold text-blue-700 uppercase">Proyección</p><p id="tPr" class="text-2xl font-black text-blue-900 mt-1"></p></div>
                 </div>
             </div>
         </div>
@@ -105,7 +114,6 @@ const msgElement = document.getElementById('lM');
 if (!atletaId) {
     msgElement.innerHTML = `⚠️ <b class="text-red-600">Error: No se encontró el parámetro 'id' en la URL.</b>`;
 } else {
-    // Esperamos a que Firebase valide la sesión activa antes de consultar Firestore
     onAuthStateChanged(auth, async (user) => {
         if (!user) {
             msgElement.innerHTML = `❌ <span class="text-red-600">Sesión no detectada. Por favor vuelve a iniciar sesión.</span>`;
@@ -133,10 +141,10 @@ if (!atletaId) {
                 document.getElementById('uPa').innerText = c.fechaUltimoPago || 'Sin registros';
                 
                 const solvente = c.fechaUltimoPago ? ((new Date() - new Date(c.fechaUltimoPago)) / 864e5 <= (c.frecuenciaPago === 'quincenal' ? 15 : 30)) : false;
-                const v = solvente ? { s: 'Solvente', c: 'bg-green-500 text-white' } : { s: 'Insolvente', c: 'bg-red-500 text-white' };
+                const v = solvente ? { s: 'Solvente', c: 'bg-emerald-500 text-white shadow-sm shadow-emerald-200' } : { s: 'Insolvente', c: 'bg-rose-500 text-white shadow-sm shadow-rose-200' };
                 const sStEl = document.getElementById('sSt');
                 sStEl.innerText = v.s;
-                sStEl.className = 'text-xs font-bold px-3 py-1 rounded-full ' + v.c;
+                sStEl.className = 'text-xs font-bold px-3 py-1.5 rounded-full inline-block ' + v.c;
 
                 document.getElementById('pes').innerText = (c.peso || 0) + ' kg';
                 document.getElementById('tal').innerText = (c.talla || 0) + ' cm';
@@ -157,11 +165,11 @@ if (!atletaId) {
                 document.getElementById('lM').classList.add('hidden');
                 document.getElementById('aD').classList.remove('hidden');
             } else {
-                msgElement.innerHTML = `❌ El documento con ID <code class="bg-gray-100 px-1 py-0.5 rounded">${atletaId}</code> no existe en la base de datos.`;
+                msgElement.innerHTML = `❌ El documento con ID <code class="bg-slate-100 px-1.5 py-0.5 rounded text-slate-700">${atletaId}</code> no existe en la base de datos.`;
             }
         } catch (e) {
             console.error("Error al cargar la ficha:", e);
-            msgElement.innerHTML = `❌ Error de permisos o conexión:<br><span class="text-red-500 text-xs">${e.message}</span>`;
+            msgElement.innerHTML = `❌ Error de permisos o conexión:<br><span class="text-rose-500 text-xs">${e.message}</span>`;
         }
     });
 }
