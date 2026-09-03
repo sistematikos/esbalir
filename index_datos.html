@@ -79,45 +79,51 @@ const _0xb=i=>{if(!i)return'--';const a=new Date(i),o=new Date();let s=o.getFull
 
 const _0xc=i=>{
     const a=i(0),o=_0x1({apiKey:"AIzaSyB5RB7mm1j-0gjCNTUEJTkyEqLjyZ3C7ws",authDomain:"datacontrolvoley-ff556.firebaseapp.com",projectId:"datacontrolvoley-ff556",storageBucket:"datacontrolvoley-ff556.firebasestorage.app",messagingSenderId:"516409072606",appId:"1:516409072606:web:132538dba358a077d71b4f"}),s=_0x2(o),r=_0x5(o);
+    
     _0x3(s,async(l)=>{
         const n=(new RegExp("[?&]id=([^&#]*)")).exec(window.location.search)?.[1]||"";
-        if(l&&n){
-            try{
-                const h=await _0x7(_0x6(r,a,n));
-                if(h.exists()){
-                    const c=h.data();
-                    _0xa('aNT').innerText=c.nombre+' '+c.apellido;
-                    _0xa('nAp').innerText=c.nombre+' '+c.apellido;
-                    _0xa('cI').innerText=c.cedulaIdentidad;
-                    _0xa('tel').innerText=c.telefono||'N/A';
-                    _0xa('fNa').innerText=c.fechaNacimiento||'N/A';
-                    _0xa('eda').innerText=_0xb(c.fechaNacimiento)+' años';
-                    _0xa('cat').innerText=c.categoria;
-                    _0xa('nCa').innerText=c.nroCamiseta;
-                    _0xa('nomT').innerText=c.frecuenciaPago==='quincenal'?'(Q)':'(M)';
-                    _0xa('mPa').innerText=parseFloat(c.montoPago||0).toFixed(2)+'$';
-                    _0xa('uPa').innerText=c.fechaUltimoPago||'Sin registros';
-                    
-                    const v=c.fechaUltimoPago?((new Date-new Date(c.fechaUltimoPago))/864e5<=(c.frecuenciaPago==='quincenal'?15:30)?{s:'Solvente',c:'bg-green-500 text-white'}:{s:'Insolvente',c:'bg-yellow-500 text-black'}):{s:'Insolvente',c:'bg-red-500 text-white'};
-                    _0xa('sSt').innerText=v.s;
-                    _0xa('sSt').className+=' '+v.c;
-                    _0xa('pes').innerText=(c.peso||0)+' kg';
-                    _0xa('tal').innerText=(c.talla||0)+' cm';
-                    
-                    const y=(c.peso>0&&(c.talla/100)>0)?(c.peso/Math.pow(c.talla/100,2)):0;
-                    _0xa('imc').innerText=y.toFixed(2);
-                    
-                    let g=0;
-                    ['U9','U11'].includes(c.categoria)?g=15:c.categoria==='U13'?g=10:c.categoria==='U15'?g=6:c.categoria==='U19'&&(g=2);
-                    _0xa('tPr').innerText=c.talla>0?((c.talla+g)/100).toFixed(2)+' m':'N/A';
-                    
-                    _0xa('lM').classList.add('hidden');
-                    _0xa('aD').classList.remove('hidden');
-                }else{
-                    _0xa('lM').innerText="No encontrado";
+        if(l){
+            if(n){
+                try{
+                    const h=await _0x7(_0x6(r,a,n));
+                    if(h.exists()){
+                        const c=h.data();
+                        _0xa('aNT').innerText=c.nombre+' '+c.apellido;
+                        _0xa('nAp').innerText=c.nombre+' '+c.apellido;
+                        _0xa('cI').innerText=c.cedulaIdentidad;
+                        _0xa('tel').innerText=c.telefono||'N/A';
+                        _0xa('fNa').innerText=c.fechaNacimiento||'N/A';
+                        _0xa('eda').innerText=_0xb(c.fechaNacimiento)+' años';
+                        _0xa('cat').innerText=c.categoria;
+                        _0xa('nCa').innerText=c.nroCamiseta;
+                        _0xa('nomT').innerText=c.frecuenciaPago==='quincenal'?'(Q)':'(M)';
+                        _0xa('mPa').innerText=parseFloat(c.montoPago||0).toFixed(2)+'$';
+                        _0xa('uPa').innerText=c.fechaUltimoPago||'Sin registros';
+                        
+                        const v=c.fechaUltimoPago?((new Date-new Date(c.fechaUltimoPago))/864e5<=(c.frecuenciaPago==='quincenal'?15:30)?{s:'Solvente',c:'bg-green-500 text-white'}:{s:'Insolvente',c:'bg-yellow-500 text-black'}):{s:'Insolvente',c:'bg-red-500 text-white'};
+                        _0xa('sSt').innerText=v.s;
+                        _0xa('sSt').className+=' '+v.c;
+                        _0xa('pes').innerText=(c.peso||0)+' kg';
+                        _0xa('tal').innerText=(c.talla||0)+' cm';
+                        
+                        const y=(c.peso>0&&(c.talla/100)>0)?(c.peso/Math.pow(c.talla/100,2)):0;
+                        _0xa('imc').innerText=y.toFixed(2);
+                        
+                        let g=0;
+                        ['U9','U11'].includes(c.categoria)?g=15:c.categoria==='U13'?g=10:c.categoria==='U15'?g=6:c.categoria==='U19'&&(g=2);
+                        _0xa('tPr').innerText=c.talla>0?((c.talla+g)/100).toFixed(2)+' m':'N/A';
+                        
+                        _0xa('lM').classList.add('hidden');
+                        _0xa('aD').classList.remove('hidden');
+                    }else{
+                        _0xa('lM').innerText="No encontrado";
+                    }
+                }catch(e){
+                    console.error("Error al buscar el atleta:", e);
+                    _0xa('lM').innerText="Error de red al cargar la ficha";
                 }
-            }catch(e){
-                _0xa('lM').innerText="Error de red";
+            }else{
+                _0xa('lM').innerText="ID de atleta no especificado en la URL";
             }
         }else{
             window.location.href=_0x0[1];
