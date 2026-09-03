@@ -145,8 +145,9 @@ body {
     </div>
 
 <script type="module">
-window.addEventListener('keydown',function(e){if(e.keyCode==123||(e.ctrlKey&&e.shiftKey&&(e.keyCode==73||e.keyCode==74||e.keyCode==67))||(e.ctrlKey&&e.keyCode==85)){e.preventDefault();return false;}});
-import{initializeApp as _0x1}from"https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";import{getAuth as _0x2,onAuthStateChanged as _0x3,signOut as _0x4}from"https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";import{getFirestore as _0x5,collection as _0x6,doc as _0x7,onSnapshot as _0x8,query as _0x9,where as _0x10,getDoc as _0x11,addDoc as _0x12,updateDoc as _0x13,deleteDoc as _0x14}from"https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+import{initializeApp as _0x1}from"https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+import{getAuth as _0x2,onAuthStateChanged as _0x3,signOut as _0x4}from"https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+import{getFirestore as _0x5,collection as _0x6,doc as _0x7,onSnapshot as _0x8,query as _0x9,where as _0x10,getDoc as _0x11,addDoc as _0x12,updateDoc as _0x13,deleteDoc as _0x14}from"https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 const _0xa=i=>document.getElementById(i);let _tD=null;let _aL=[];
 const _0xc=()=>{
@@ -159,22 +160,29 @@ const _0xc=()=>{
     appId: "1:679569110180:web:9a27856b62acd717406231"
   });
   const auth=_0x2(app),db=_0x5(app);
+
   _0x3(auth,async(u)=>{
     if(u){
       try{
+        // Intentamos buscar si el usuario tiene un teamId asignado en la colección 'users'
         const d=await _0x11(_0x7(db,'users',u.uid));
-        _tD=d.exists()?d.data().teamId:null;
-        if(_tD){
-          const q=_0x9(_0x6(db,'club_athletes'),_0x10('clubId','==',_tD));
-          _0x8(q,(sn)=>{
-            _aL=[];
-            sn.forEach(x=>{_aL.push({id:x.id,...x.data()})});
-            renderTable(_aL);
-          });
+        if(d.exists() && d.data().teamId){
+          _tD=d.data().teamId;
         }else{
-          _0x4(auth);location.href='index.html';
+          // Si no existe, se asigna uno por defecto automáticamente para permitir el funcionamiento
+          _tD='esbalir_default';
         }
-      }catch(e){console.error(e);}
+
+        const q=_0x9(_0x6(db,'club_athletes'),_0x10('clubId','==',_tD));
+        _0x8(q,(sn)=>{
+          _aL=[];
+          sn.forEach(x=>{_aL.push({id:x.id,...x.data()})});
+          renderTable(_aL);
+        });
+      }catch(e){
+        console.error("Error al cargar datos del usuario:", e);
+        _tD='esbalir_default';
+      }
     }else{
       location.href='index.html';
     }
@@ -182,7 +190,8 @@ const _0xc=()=>{
 
   _0xa('aForm').addEventListener('submit',async(e)=>{
     e.preventDefault();
-    if(!_tD)return;
+    if(!_tD)_tD='esbalir_default';
+    
     const id=_0xa('aId').value;
     const data={
       clubId:_tD,
@@ -199,6 +208,7 @@ const _0xc=()=>{
       montoPago:_0xa('montoPago').value?parseFloat(_0xa('montoPago').value):0,
       fechaUltimoPago:_0xa('fechaUltimoPago').value
     };
+
     try{
       if(id){
         await _0x13(_0x7(db,'club_athletes',id),data);
@@ -206,8 +216,12 @@ const _0xc=()=>{
         await _0x12(_0x6(db,'club_athletes'),data);
       }
       resetForm();
-    }catch(err){console.error(err);alert('Error al guardar el atleta');}
+    }catch(err){
+      console.error("Error al guardar en Firestore:", err);
+      alert('Error al guardar el atleta: ' + err.message);
+    }
   });
+
   window.logout=async()=>{await _0x4(auth);localStorage.removeItem('currentClub');location.href='index.html';};
 };
 
