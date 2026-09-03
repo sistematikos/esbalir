@@ -15,10 +15,6 @@
 body {
   font-family: 'Inter', sans-serif;
   background-color: var(--bg-claro);
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
 }
 .banner-header {
   background-image: url('img/banner.png');
@@ -29,7 +25,7 @@ body {
 }
 </style>
 </head>
-<body oncontextmenu="return false">
+<body>
     <div class="banner-header"></div>
     <div class="container mx-auto p-4 flex items-center justify-center min-h-[60vh]">
         <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md border border-gray-100">
@@ -50,11 +46,11 @@ body {
     </div>
 
 <script type="module">
-window.addEventListener('keydown',function(e){if(e.keyCode==123||(e.ctrlKey&&e.shiftKey&&(e.keyCode==73||e.keyCode==74||e.keyCode==67))||(e.ctrlKey&&e.keyCode==85)){e.preventDefault();return false;}});
-import{initializeApp as _0x1}from"https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";import{getAuth as _0x2,signInWithEmailAndPassword as _0x3,signOut as _0x4}from"https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";import{getFirestore as _0x5,doc as _0x6,getDoc as _0x7,setDoc as _0x8}from"https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-const _0xa=i=>document.getElementById(i);
-const app=_0x1({
+const app = initializeApp({
   apiKey: "AIzaSyBXtzQIu0q2TrfmasOtlahQHH8IxRXt8Xg",
   authDomain: "esbalir-bc3ee.firebaseapp.com",
   projectId: "esbalir-bc3ee",
@@ -62,7 +58,9 @@ const app=_0x1({
   messagingSenderId: "679569110180",
   appId: "1:679569110180:web:9a27856b62acd717406231"
 });
-const auth=_0x2(app), db=_0x5(app);
+
+const auth = getAuth(app);
+const db = getFirestore(app);
 
 function getDeviceFingerprint() {
   let deviceId = localStorage.getItem('esbalir_device_id');
@@ -73,34 +71,40 @@ function getDeviceFingerprint() {
   return deviceId;
 }
 
-_0xa('loginForm').addEventListener('submit',async(e)=>{
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
   e.preventDefault();
-  const email=_0xa('email').value.trim();
-  const password=_0xa('password').value;
-  const errEl=_0xa('errorMsg');
-  const btn=_0xa('btnSubmit');
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  const errEl = document.getElementById('errorMsg');
+  const btn = document.getElementById('btnSubmit');
+  
   errEl.classList.add('hidden');
-  btn.disabled=true;
-  btn.textContent='Verificando...';
+  btn.disabled = true;
+  btn.textContent = 'Verificando...';
 
-  try{
-    const userCredential = await _0x3(auth,email,password);
+  try {
+    // 1. Autenticar con Firebase Auth
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
     
-    // Excepción para tu correo de administrador principal si deseas entrar directo
-    if(email === 'admin@esbalir.com') {
-      location.href='index_menu.html';
+    // Si eres tú (admin), pasa directo
+    if (email === 'admin@esbalir.com') {
+      location.href = 'index_menu.html';
       return;
     }
 
+    // 2. Verificar dispositivo en Firestore
     const deviceId = getDeviceFingerprint();
-    const deviceRef = _0x6(db, 'authorized_devices', `${user.uid}_${deviceId}`);
-    const deviceSnap = await _07(deviceRef);
+    const deviceDocId = `${user.uid}_${deviceId}`;
+    const deviceRef = doc(db, 'authorized_devices', deviceDocId);
+    
+    const deviceSnap = await getDoc(deviceRef);
 
     if (deviceSnap.exists() && deviceSnap.data().approved === true) {
-      location.href='index_menu.html';
+      location.href = 'index_menu.html';
     } else {
-      await _0x8(deviceRef, {
+      // Registrar como pendiente
+      await setDoc(deviceRef, {
         userId: user.uid,
         email: user.email,
         deviceId: deviceId,
@@ -109,18 +113,17 @@ _0xa('loginForm').addEventListener('submit',async(e)=>{
         requestedAt: new Date().toISOString()
       }, { merge: true });
 
-      await _0x4(auth);
-      errEl.textContent='Este dispositivo no está autorizado. Se ha registrado la solicitud pendiente.';
+      await signOut(auth);
+      errEl.textContent = 'Dispositivo pendiente de aprobación por el administrador.';
       errEl.classList.remove('hidden');
     }
-  }catch(err){
-    console.error(err);
-    // AQUÍ MUESTRA EL ERROR REAL EN PANTALLA PARA DIAGNOSTICAR:
+  } catch (err) {
+    console.error("Error detallado en login:", err);
     errEl.textContent = 'Error: ' + err.message;
     errEl.classList.remove('hidden');
   } finally {
-    btn.disabled=false;
-    btn.textContent='Ingresar';
+    btn.disabled = false;
+    btn.textContent = 'Ingresar';
   }
 });
 </script>
