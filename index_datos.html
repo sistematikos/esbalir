@@ -43,7 +43,7 @@ body {
             <h1 class="text-2xl font-black text-gray-800">Ficha: <span id="aNT" class="text-orange-600">...</span></h1>
         </header>
         <div id="aDC" class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
-            <p id="lM" class="text-center py-10 text-gray-400 italic">Validando seguridad...</p>
+            <p id="lM" class="text-center py-10 text-gray-400 italic">Validando sesión y datos...</p>
             <div id="aD" class="hidden">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 text-sm">
                     <div><span class="font-semibold text-gray-500">Nombre:</span> <span id="nAp" class="block"></span></div>
@@ -69,68 +69,106 @@ body {
 
 <script type="module">
 window.addEventListener('keydown',function(e){if(e.keyCode==123||(e.ctrlKey&&e.shiftKey&&(e.keyCode==73||e.keyCode==74||e.keyCode==67))||(e.ctrlKey&&e.keyCode==85)){e.preventDefault();return false;}});
-import{initializeApp as _0x1}from"https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import{getAuth as _0x2,onAuthStateChanged as _0x3}from"https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-import{getFirestore as _0x5,doc as _0x6,getDoc as _0x7}from"https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-const _0x0=['\x63\x6c\x75\x62\x5f\x61\x74\x68\x6c\x65\x74\x65\x73','\x69\x6e\x64\x65\x78\x2e\x68\x74\x6d\x6c'];
-const _0xa=i=>document.getElementById(i);
-const _0xb=i=>{if(!i)return'--';const a=new Date(i),o=new Date();let s=o.getFullYear()-a.getFullYear();return(o.getMonth()<a.getMonth()||o.getMonth()===a.getMonth()&&o.getDate()<a.getDate())&&s--,s};
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-const _0xc=i=>{
-    const a=i(0),o=_0x1({apiKey:"AIzaSyB5RB7mm1j-0gjCNTUEJTkyEqLjyZ3C7ws",authDomain:"datacontrolvoley-ff556.firebaseapp.com",projectId:"datacontrolvoley-ff556",storageBucket:"datacontrolvoley-ff556.firebasestorage.app",messagingSenderId:"516409072606",appId:"1:516409072606:web:132538dba358a077d71b4f"}),s=_0x2(o),r=_0x5(o);
-    
-    _0x3(s,async(l)=>{
-        const n=(new RegExp("[?&]id=([^&#]*)")).exec(window.location.search)?.[1]||"";
-        if(l){
-            if(n){
-                try{
-                    const h=await _0x7(_0x6(r,a,n));
-                    if(h.exists()){
-                        const c=h.data();
-                        _0xa('aNT').innerText=c.nombre+' '+c.apellido;
-                        _0xa('nAp').innerText=c.nombre+' '+c.apellido;
-                        _0xa('cI').innerText=c.cedulaIdentidad;
-                        _0xa('tel').innerText=c.telefono||'N/A';
-                        _0xa('fNa').innerText=c.fechaNacimiento||'N/A';
-                        _0xa('eda').innerText=_0xb(c.fechaNacimiento)+' años';
-                        _0xa('cat').innerText=c.categoria;
-                        _0xa('nCa').innerText=c.nroCamiseta;
-                        _0xa('nomT').innerText=c.frecuenciaPago==='quincenal'?'(Q)':'(M)';
-                        _0xa('mPa').innerText=parseFloat(c.montoPago||0).toFixed(2)+'$';
-                        _0xa('uPa').innerText=c.fechaUltimoPago||'Sin registros';
-                        
-                        const v=c.fechaUltimoPago?((new Date-new Date(c.fechaUltimoPago))/864e5<=(c.frecuenciaPago==='quincenal'?15:30)?{s:'Solvente',c:'bg-green-500 text-white'}:{s:'Insolvente',c:'bg-yellow-500 text-black'}):{s:'Insolvente',c:'bg-red-500 text-white'};
-                        _0xa('sSt').innerText=v.s;
-                        _0xa('sSt').className+=' '+v.c;
-                        _0xa('pes').innerText=(c.peso||0)+' kg';
-                        _0xa('tal').innerText=(c.talla||0)+' cm';
-                        
-                        const y=(c.peso>0&&(c.talla/100)>0)?(c.peso/Math.pow(c.talla/100,2)):0;
-                        _0xa('imc').innerText=y.toFixed(2);
-                        
-                        let g=0;
-                        ['U9','U11'].includes(c.categoria)?g=15:c.categoria==='U13'?g=10:c.categoria==='U15'?g=6:c.categoria==='U19'&&(g=2);
-                        _0xa('tPr').innerText=c.talla>0?((c.talla+g)/100).toFixed(2)+' m':'N/A';
-                        
-                        _0xa('lM').classList.add('hidden');
-                        _0xa('aD').classList.remove('hidden');
-                    }else{
-                        _0xa('lM').innerText="No encontrado";
-                    }
-                }catch(e){
-                    console.error("Error al buscar el atleta:", e);
-                    _0xa('lM').innerText="Error de red al cargar la ficha";
-                }
-            }else{
-                _0xa('lM').innerText="ID de atleta no especificado en la URL";
-            }
-        }else{
-            window.location.href=_0x0[1];
-        }
-    });
+const app = initializeApp({
+    apiKey: "AIzaSyB5RB7mm1j-0gjCNTUEJTkyEqLjyZ3C7ws",
+    authDomain: "datacontrolvoley-ff556.firebaseapp.com",
+    projectId: "datacontrolvoley-ff556",
+    storageBucket: "datacontrolvoley-ff556.firebasestorage.app",
+    messagingSenderId: "516409072606",
+    appId: "1:516409072606:web:132538dba358a077d71b4f"
+});
+
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const calcularEdad = (fechaStr) => {
+    if (!fechaStr) return '--';
+    const nac = new Date(fechaStr);
+    const hoy = new Date();
+    let edad = hoy.getFullYear() - nac.getFullYear();
+    const m = hoy.getMonth() - nac.getMonth();
+    if (m < 0 || (m === 0 && hoy.getDate() < nac.getDate())) {
+        edad--;
+    }
+    return edad;
 };
-_0xc(i=>_0x0[i]);
+
+onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+        // Si no hay sesión real, mandamos al index
+        window.location.href = 'index.html';
+        return;
+    }
+
+    // Obtener el ID de la URL (?id=...)
+    const urlParams = new URLSearchParams(window.location.search);
+    const atletaId = urlParams.get('id');
+
+    if (!atletaId) {
+        document.getElementById('lM').innerText = "No se especificó el ID del atleta en la URL.";
+        return;
+    }
+
+    try {
+        // Cambia 'club_athletes' aquí si tu colección en Firestore se llama diferente (ej. 'athletes', 'jugadores')
+        const docRef = doc(db, 'club_athletes', atletaId);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            const c = docSnap.data();
+            
+            document.getElementById('aNT').innerText = (c.nombre || '') + ' ' + (c.apellido || '');
+            document.getElementById('nAp').innerText = (c.nombre || '') + ' ' + (c.apellido || '');
+            document.getElementById('cI').innerText = c.cedulaIdentidad || 'N/A';
+            document.getElementById('tel').innerText = c.telefono || 'N/A';
+            document.getElementById('fNa').innerText = c.fechaNacimiento || 'N/A';
+            document.getElementById('eda').innerText = calcularEdad(c.fechaNacimiento) + ' años';
+            document.getElementById('cat').innerText = c.categoria || 'N/A';
+            document.getElementById('nCa').innerText = c.nroCamiseta || 'N/A';
+            document.getElementById('nomT').innerText = c.frecuenciaPago === 'quincenal' ? '(Q)' : '(M)';
+            document.getElementById('mPa').innerText = parseFloat(c.montoPago || 0).toFixed(2) + '$';
+            document.getElementById('uPa').innerText = c.fechaUltimoPago || 'Sin registros';
+            
+            // Solvencia
+            const solvente = c.fechaUltimoPago ? ((new Date() - new Date(c.fechaUltimoPago)) / 864e5 <= (c.frecuenciaPago === 'quincenal' ? 15 : 30)) : false;
+            const v = solvente ? { s: 'Solvente', c: 'bg-green-500 text-white' } : { s: 'Insolvente', c: 'bg-red-500 text-white' };
+            const sStEl = document.getElementById('sSt');
+            sStEl.innerText = v.s;
+            sStEl.className = 'text-xs font-bold px-3 py-1 rounded-full ' + v.c;
+
+            document.getElementById('pes').innerText = (c.peso || 0) + ' kg';
+            document.getElementById('tal').innerText = (c.talla || 0) + ' cm';
+            
+            // IMC
+            const peso = parseFloat(c.peso || 0);
+            const tallaM = parseFloat(c.talla || 0) / 100;
+            const imc = (peso > 0 && tallaM > 0) ? (peso / Math.pow(tallaM, 2)) : 0;
+            document.getElementById('imc').innerText = imc.toFixed(2);
+            
+            // Proyección
+            let g = 0;
+            if (['U9', 'U11'].includes(c.categoria)) g = 15;
+            else if (c.categoria === 'U13') g = 10;
+            else if (c.categoria === 'U15') g = 6;
+            else if (c.categoria === 'U19') g = 2;
+            
+            document.getElementById('tPr').innerText = (c.talla > 0) ? ((parseFloat(c.talla) + g) / 100).toFixed(2) + ' m' : 'N/A';
+            
+            document.getElementById('lM').classList.add('hidden');
+            document.getElementById('aD').classList.remove('hidden');
+        } else {
+            document.getElementById('lM').innerText = "Atleta no encontrado en la base de datos.";
+        }
+    } catch (e) {
+        console.error("Error detallado al cargar el documento del atleta:", e);
+        document.getElementById('lM').innerText = "Error al conectar con la base de datos. Revisa la consola.";
+    }
+});
 </script>
 </body>
 </html>
