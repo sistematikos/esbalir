@@ -87,7 +87,7 @@ _0xa('loginForm').addEventListener('submit',async(e)=>{
     const userCredential = await _0x3(auth,email,password);
     const user = userCredential.user;
     
-    // Si eres el admin principal (puedes cambiar este correo por el tuyo)
+    // Excepción para tu correo de administrador principal si deseas entrar directo
     if(email === 'admin@esbalir.com') {
       location.href='index_menu.html';
       return;
@@ -95,7 +95,7 @@ _0xa('loginForm').addEventListener('submit',async(e)=>{
 
     const deviceId = getDeviceFingerprint();
     const deviceRef = _0x6(db, 'authorized_devices', `${user.uid}_${deviceId}`);
-    const deviceSnap = await _0x7(deviceRef);
+    const deviceSnap = await _07(deviceRef);
 
     if (deviceSnap.exists() && deviceSnap.data().approved === true) {
       location.href='index_menu.html';
@@ -110,12 +110,13 @@ _0xa('loginForm').addEventListener('submit',async(e)=>{
       }, { merge: true });
 
       await _0x4(auth);
-      errEl.textContent='Este dispositivo no está autorizado por el administrador. Se ha registrado la solicitud.';
+      errEl.textContent='Este dispositivo no está autorizado. Se ha registrado la solicitud pendiente.';
       errEl.classList.remove('hidden');
     }
   }catch(err){
     console.error(err);
-    errEl.textContent='Credenciales incorrectas o error de acceso.';
+    // AQUÍ MUESTRA EL ERROR REAL EN PANTALLA PARA DIAGNOSTICAR:
+    errEl.textContent = 'Error: ' + err.message;
     errEl.classList.remove('hidden');
   } finally {
     btn.disabled=false;
