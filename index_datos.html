@@ -164,16 +164,19 @@ if (!atletaId) {
                 sStEl.innerText = v.s;
                 sStEl.className = 'text-xs font-bold px-3 py-1.5 rounded-full inline-block ' + v.c;
 
+                // Corrección robusta: asegurar que si la BD guarda la talla en metros (ej. 1.7), se convierta a centímetros, o si está en cm (ej. 170) se mantenga
+                let rawTalla = parseFloat(c.talla || 0);
+                let tallaCm = rawTalla > 0 && rawTalla < 3 ? rawTalla * 100 : rawTalla; // Si viene como 1.7 se pasa a 170 cm
+                
                 document.getElementById('pes').innerText = (c.peso || 0) + ' kg';
-                document.getElementById('tal').innerText = (c.talla || 0) + ' cm';
+                document.getElementById('tal').innerText = tallaCm > 0 ? tallaCm + ' cm' : '0 cm';
                 
                 const peso = parseFloat(c.peso || 0);
-                const tallaCm = parseFloat(c.talla || 0);
                 const tallaM = tallaCm / 100;
                 
-                // Cálculo de IMC corregido con unidades explícitas
+                // Cálculo de IMC con validación estricta de división segura
                 const imc = (peso > 0 && tallaM > 0) ? (peso / Math.pow(tallaM, 2)) : 0;
-                document.getElementById('imc').innerText = imc > 0 ? imc.toFixed(2) + ' kg/m²' : '0.00';
+                document.getElementById('imc').innerText = imc > 0 && imc < 100 ? imc.toFixed(2) + ' kg/m²' : '0.00 kg/m²';
                 
                 // Proyección de talla optimizada según categoría
                 let gCm = 0;
@@ -182,7 +185,7 @@ if (!atletaId) {
                 else if (c.categoria === 'U13') gCm = 12;
                 else if (c.categoria === 'U15') gCm = 7;
                 else if (c.categoria === 'U17') gCm = 3;
-                else if (c.categoria === 'U19' || c.categoria === 'Senior') gCm = 0;
+                else if (['U19', 'Senior'].includes(c.categoria)) gCm = 0;
                 
                 const tallaProyectadaCm = tallaCm > 0 ? tallaCm + gCm : 0;
                 document.getElementById('tPr').innerText = tallaProyectadaCm > 0 ? (tallaProyectadaCm / 100).toFixed(2) + ' m' : 'N/A';
