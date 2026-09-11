@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
 <style>
 :root {
-  --color-azul: #1E3A8A;   /* Azul corporativo principal */
+  --color-azul: #1E3A8A;    /* Azul corporativo principal */
   --color-mostaza: #D97706; /* Mostaza / Naranja corporativo */
   --bg-claro: #F9FAFB;
 }
@@ -116,14 +116,25 @@ function _rL(p){
   }
   p.forEach(k=>{
     const age=_0xb(k.fechaNacimiento);
-    // Creamos la tarjeta usando DOM estructurado en lugar de un onclick inseguro en cadena de texto
+    
+    // Generador de miniatura o iniciales para la tarjeta
+    const avatar = k.fotoUrl 
+      ? `<img src="${k.fotoUrl}" class="w-12 h-12 rounded-full object-cover shadow-sm border border-gray-200">` 
+      : `<div class="w-12 h-12 rounded-full bg-blue-100 text-blue-800 flex items-center font-bold justify-center text-sm">${(k.nombre?.[0]||'')+(k.apellido?.[0]||'')}</div>`;
+
     const card = document.createElement('div');
     card.className = "athlete-card cursor-pointer bg-white p-4 rounded-xl shadow-sm border border-gray-200 border-l-4";
     card.style.borderLeftColor = "#D97706";
     
     card.innerHTML = `
-      <p class="text-lg font-extrabold" style="color: var(--color-azul);">${k.nombre || ''} ${k.apellido || ''}</p>
-      <div class="mt-2 text-sm text-gray-600 space-y-1">
+      <div class="flex items-center space-x-3 mb-2">
+        ${avatar}
+        <div>
+          <p class="text-lg font-extrabold leading-tight" style="color: var(--color-azul);">${k.nombre || ''} ${k.apellido || ''}</p>
+          <span class="text-xs text-gray-500 font-semibold">${k.sede || 'Sin sede'}</span>
+        </div>
+      </div>
+      <div class="text-sm text-gray-600 space-y-1">
         <p><span class="font-semibold text-gray-700">CI:</span> ${k.cedulaIdentidad||'N/A'}</p>
         <p><span class="font-semibold text-gray-700">Edad:</span> ${age} años</p>
         <p><span class="font-semibold text-gray-700">Categoría:</span> <span class="px-2 py-0.5 bg-blue-50 text-blue-800 rounded font-bold text-xs">${k.categoria||'N/A'}</span></p>
@@ -134,7 +145,6 @@ function _rL(p){
       </div>
     `;
 
-    // Asociamos el evento de forma limpia y directa al elemento creado
     card.addEventListener('click', () => {
       window.location.href = 'index_datos.html?id=' + k.id;
     });
