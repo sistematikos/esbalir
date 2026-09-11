@@ -168,17 +168,24 @@ if (!atletaId) {
                 document.getElementById('tal').innerText = (c.talla || 0) + ' cm';
                 
                 const peso = parseFloat(c.peso || 0);
-                const tallaM = parseFloat(c.talla || 0) / 100;
+                const tallaCm = parseFloat(c.talla || 0);
+                const tallaM = tallaCm / 100;
+                
+                // Cálculo de IMC corregido con unidades explícitas
                 const imc = (peso > 0 && tallaM > 0) ? (peso / Math.pow(tallaM, 2)) : 0;
-                document.getElementById('imc').innerText = imc.toFixed(2);
+                document.getElementById('imc').innerText = imc > 0 ? imc.toFixed(2) + ' kg/m²' : '0.00';
                 
-                let g = 0;
-                if (['U9', 'U11'].includes(c.categoria)) g = 15;
-                else if (c.categoria === 'U13') g = 10;
-                else if (c.categoria === 'U15') g = 6;
-                else if (c.categoria === 'U19') g = 2;
+                // Proyección de talla optimizada según categoría
+                let gCm = 0;
+                if (['U7', 'U9'].includes(c.categoria)) gCm = 22;
+                else if (c.categoria === 'U11') gCm = 18;
+                else if (c.categoria === 'U13') gCm = 12;
+                else if (c.categoria === 'U15') gCm = 7;
+                else if (c.categoria === 'U17') gCm = 3;
+                else if (c.categoria === 'U19' || c.categoria === 'Senior') gCm = 0;
                 
-                document.getElementById('tPr').innerText = (c.talla > 0) ? ((parseFloat(c.talla) + g) / 100).toFixed(2) + ' m' : 'N/A';
+                const tallaProyectadaCm = tallaCm > 0 ? tallaCm + gCm : 0;
+                document.getElementById('tPr').innerText = tallaProyectadaCm > 0 ? (tallaProyectadaCm / 100).toFixed(2) + ' m' : 'N/A';
                 
                 document.getElementById('lM').classList.add('hidden');
                 document.getElementById('aD').classList.remove('hidden');
