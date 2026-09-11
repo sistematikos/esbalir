@@ -52,7 +52,7 @@ body {
                     
                     <!-- Campo para la Foto -->
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Foto del Atleta</label>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Foto del Atleta (Se comprimirá automáticamente)</label>
                         <input type="file" id="fotoAtleta" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100">
                     </div>
 
@@ -195,10 +195,51 @@ const _0xa = i => document.getElementById(i);
 let _tD = 'esbalir_default'; 
 let _aL = [];
 
-// Inicialización de Supabase con tu bucket correcto 'atletasesbalir1'
 const supabaseUrl = 'https://vzpiqhkdltgniswbbzyv.supabase.co';
 const supabaseKey = 'sb_publishable_TzsVoHmyFFxeDWgSS_PIhw_Mh78HEp5';
 const supabase = createClient(supabaseUrl, supabaseKey);
+
+// Función para comprimir y recortar la imagen en cuadrado antes de subir
+async function comprimirYRecortarImagen(file, size = 400, quality = 0.75) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+      const img = new Image();
+      img.src = event.target.result;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const width = img.width;
+        const height = img.height;
+
+        // Recorte cuadrado centrado
+        const minDim = Math.min(width, height);
+        const startX = (width - minDim) / 2;
+        const startY = (height - minDim) / 2;
+
+        canvas.width = size;
+        canvas.height = size;
+
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, startX, startY, minDim, minDim, 0, 0, size, size);
+
+        canvas.toBlob((blob) => {
+          if (!blob) {
+            reject(new Error('Error al comprimir la imagen'));
+            return;
+          }
+          const compressedFile = new File([blob], `${Date.now()}_atleta.jpg`, {
+            type: 'image/jpeg',
+            lastModified: Date.now()
+          });
+          resolve(compressedFile);
+        }, 'image/jpeg', quality);
+      };
+      img.onerror = (error) => reject(error);
+    };
+    reader.onerror = (error) => reject(error);
+  });
+}
 
 const _0xc = () => {
   const app = _0x1({
@@ -241,20 +282,25 @@ const _0xc = () => {
     const cedula = _0xa('cedulaIdentidad').value.trim();
     const inputArchivo = _0xa('fotoAtleta');
     const archivo = inputArchivo.files[0];
+    const sedeAtleta = _0xa('sede').value;
     
-    let urlFoto = _0xa('fotoUrlActual').value; // Mantener la foto anterior si no se selecciona una nueva
+    let urlFoto = _0xa('fotoUrlActual').value;
 
     try {
-      // Subida de imagen al bucket 'atletasesbalir1' de Supabase
       if (archivo) {
-        const fileName = `${cedula}_${Date.now()}_${archivo.name}`;
+        // Comprimir y recortar la imagen antes de subirla
+        const archivoOptimizado = await comprimirYRecortarImagen(archivo, 400, 0.75);
+        
+        // Organizar en carpeta por sede dentro del bucket para mayor orden
+        const sedeLimpia = (sedeAtleta || 'general').toLowerCase().replace(/[^a-z0-9]/g, '_');
+        const fileName = `${sedeLimpia}/${cedula}_${Date.now()}.jpg`;
+
         const { data: uploadData, error: uploadError } = await supabase.storage
           .from('atletasesbalir1')
-          .upload(fileName, archivo, { upsert: true });
+          .upload(fileName, archivoOptimizado, { upsert: true });
 
         if (uploadError) throw uploadError;
 
-        // Obtener la URL pública de la imagen en Supabase
         const { data: publicURLData } = supabase.storage
           .from('atletasesbalir1')
           .getPublicUrl(fileName);
@@ -269,7 +315,7 @@ const _0xc = () => {
         cedulaIdentidad: cedula,
         telefono: _0xa('telefono').value.trim(),
         fechaNacimiento: _0xa('fechaNacimiento').value,
-        sede: _0xa('sede').value,
+        sede: sedeAtleta,
         categoria: _0xa('categoria').value,
         nroCamiseta: _0xa('nroCamiseta').value.trim(),
         peso: _0xa('peso').value ? parseFloat(_0xa('peso').value) : 0,
@@ -280,7 +326,7 @@ const _0xc = () => {
         frecuenciaPago: _0xa('frecuenciaPago').value,
         montoPago: _0xa('montoPago').value ? parseFloat(_0xa('montoPago').value) : 0,
         fechaUltimoPago: _0xa('fechaUltimoPago').value,
-        fotoUrl: urlFoto // Guardamos la URL pública de Supabase en Firestore
+        fotoUrl: urlFoto
       };
 
       if (id) {
@@ -290,7 +336,7 @@ const _0xc = () => {
       }
       resetForm();
     } catch (err) {
-      console.error("Error al guardar en Firestore / Supabase Storage:", err);
+      console.error("Error al guardar:", err);
       alert('Error al guardar el atleta: ' + err.message);
     }
   });
@@ -310,7 +356,6 @@ function renderTable(arr) {
 
   sortedArr.forEach(k => {
     const tr = document.createElement('tr');
-    // Miniatura de la foto o iniciales si no tiene
     const avatar = k.fotoUrl 
       ? `<img src="${k.fotoUrl}" class="w-9 h-9 rounded-full object-cover shadow-sm">` 
       : `<div class="w-9 h-9 rounded-full bg-blue-100 text-blue-800 flex items-center font-bold justify-center text-xs">${(k.nombre?.[0]||'')+(k.apellido?.[0]||'')}</div>`;
