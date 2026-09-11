@@ -48,6 +48,14 @@ body {
                 <h2 id="fT" class="text-xl font-bold mb-4" style="color: var(--color-azul);">Registrar Nuevo Atleta</h2>
                 <form id="aForm" class="space-y-4">
                     <input type="hidden" id="aId">
+                    <input type="hidden" id="fotoUrlActual">
+                    
+                    <!-- Campo para la Foto -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Foto del Atleta</label>
+                        <input type="file" id="fotoAtleta" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100">
+                    </div>
+
                     <div>
                         <label class="block text-sm font-semibold text-gray-700">Nombre</label>
                         <input type="text" id="nombre" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2.5 border focus:ring-amber-500 focus:border-amber-500 outline-none">
@@ -102,7 +110,6 @@ body {
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700">Talla (m / cm)</label>
-                            <!-- Actualizado step a 0.01 para permitir decimales como 1.72 -->
                             <input type="number" step="0.01" id="talla" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2.5 border focus:ring-amber-500 focus:border-amber-500 outline-none">
                         </div>
                     </div>
@@ -179,14 +186,17 @@ body {
     </div>
 
 <script type="module">
-import{initializeApp as _0x1}from"https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import{getAuth as _0x2,onAuthStateChanged as _0x3,signOut as _0x4}from"https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-import{getFirestore as _0x5,collection as _0x6,doc as _0x7,onSnapshot as _0x8,getDoc as _0x11,addDoc as _0x12,updateDoc as _0x13,deleteDoc as _0x14}from"https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+import { initializeApp as _0x1 } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+import { getAuth as _0x2, onAuthStateChanged as _0x3, signOut as _0x4 } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+import { getFirestore as _0x5, collection as _0x6, doc as _0x7, onSnapshot as _0x8, getDoc as _0x11, addDoc as _0x12, updateDoc as _0x13, deleteDoc as _0x14 } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
 
-const _0xa=i=>document.getElementById(i);let _tD='esbalir_default';let _aL=[];
+const _0xa = i => document.getElementById(i); 
+let _tD = 'esbalir_default'; 
+let _aL = [];
 
-const _0xc=()=>{
-  const app=_0x1({
+const _0xc = () => {
+  const app = _0x1({
     apiKey: "AIzaSyBXtzQIu0q2TrfmasOtlahQHH8IxRXt8Xg",
     authDomain: "esbalir-bc3ee.firebaseapp.com",
     projectId: "esbalir-bc3ee",
@@ -194,74 +204,88 @@ const _0xc=()=>{
     messagingSenderId: "679569110180",
     appId: "1:679569110180:web:9a27856b62acd717406231"
   });
-  const auth=_0x2(app),db=_0x5(app);
+  const auth = _0x2(app), db = _0x5(app), storage = getStorage(app);
 
-  _0x3(auth,async(u)=>{
-    if(u){
-      try{
-        const d=await _0x11(_0x7(db,'users',u.uid));
-        if(d.exists() && d.data().teamId){
-          _tD=d.data().teamId;
+  _0x3(auth, async (u) => {
+    if (u) {
+      try {
+        const d = await _0x11(_0x7(db, 'users', u.uid));
+        if (d.exists() && d.data().teamId) {
+          _tD = d.data().teamId;
         }
 
-        _0x8(_0x6(db,'club_athletes'),(sn)=>{
-          _aL=[];
-          sn.forEach(x=>{
-            const data=x.data();
-            _aL.push({id:x.id, ...data});
+        _0x8(_0x6(db, 'club_athletes'), (sn) => {
+          _aL = [];
+          sn.forEach(x => {
+            const data = x.data();
+            _aL.push({ id: x.id, ...data });
           });
           filterNomina();
         });
-      }catch(e){
+      } catch (e) {
         console.error("Error al cargar datos del usuario:", e);
       }
-    }else{
-      location.href='index.html';
+    } else {
+      location.href = 'index.html';
     }
   });
 
-  _0xa('aForm').addEventListener('submit',async(e)=>{
+  _0xa('aForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const id=_0xa('aId').value;
-    const data={
-      clubId:_tD,
-      nombre:_0xa('nombre').value.trim(),
-      apellido:_0xa('apellido').value.trim(),
-      cedulaIdentidad:_0xa('cedulaIdentidad').value.trim(),
-      telefono:_0xa('telefono').value.trim(),
-      fechaNacimiento:_0xa('fechaNacimiento').value,
-      sede:_0xa('sede').value,
-      categoria:_0xa('categoria').value,
-      nroCamiseta:_0xa('nroCamiseta').value.trim(),
-      peso:_0xa('peso').value?parseFloat(_0xa('peso').value):0,
-      talla:_0xa('talla').value?parseFloat(_0xa('talla').value):0,
-      nombreRepresentante:_0xa('nombreRepresentante').value.trim(),
-      cedulaRepresentante:_0xa('cedulaRepresentante').value.trim(),
-      telefonoRepresentante:_0xa('telefonoRepresentante').value.trim(),
-      frecuenciaPago:_0xa('frecuenciaPago').value,
-      montoPago:_0xa('montoPago').value?parseFloat(_0xa('montoPago').value):0,
-      fechaUltimoPago:_0xa('fechaUltimoPago').value
-    };
+    const id = _0xa('aId').value;
+    const cedula = _0xa('cedulaIdentidad').value.trim();
+    const inputArchivo = _0xa('fotoAtleta');
+    const archivo = inputArchivo.files[0];
+    
+    let urlFoto = _0xa('fotoUrlActual').value; // Mantener la foto anterior si no se selecciona una nueva
 
-    try{
-      if(id){
-        await _0x13(_0x7(db,'club_athletes',id),data);
-      }else{
-        await _0x12(_0x6(db,'club_athletes'),data);
+    try {
+      // Si el usuario seleccionó una nueva foto, subirla a Storage
+      if (archivo) {
+        const rutaStorage = ref(storage, `atletas/${cedula}_${archivo.name}`);
+        const snapshot = await uploadBytes(rutaStorage, archivo);
+        urlFoto = await getDownloadURL(snapshot.ref);
+      }
+
+      const data = {
+        clubId: _tD,
+        nombre: _0xa('nombre').value.trim(),
+        apellido: _0xa('apellido').value.trim(),
+        cedulaIdentidad: cedula,
+        telefono: _0xa('telefono').value.trim(),
+        fechaNacimiento: _0xa('fechaNacimiento').value,
+        sede: _0xa('sede').value,
+        categoria: _0xa('categoria').value,
+        nroCamiseta: _0xa('nroCamiseta').value.trim(),
+        peso: _0xa('peso').value ? parseFloat(_0xa('peso').value) : 0,
+        talla: _0xa('talla').value ? parseFloat(_0xa('talla').value) : 0,
+        nombreRepresentante: _0xa('nombreRepresentante').value.trim(),
+        cedulaRepresentante: _0xa('cedulaRepresentante').value.trim(),
+        telefonoRepresentante: _0xa('telefonoRepresentante').value.trim(),
+        frecuenciaPago: _0xa('frecuenciaPago').value,
+        montoPago: _0xa('montoPago').value ? parseFloat(_0xa('montoPago').value) : 0,
+        fechaUltimoPago: _0xa('fechaUltimoPago').value,
+        fotoUrl: urlFoto // Guardamos la URL de la imagen
+      };
+
+      if (id) {
+        await _0x13(_0x7(db, 'club_athletes', id), data);
+      } else {
+        await _0x12(_0x6(db, 'club_athletes'), data);
       }
       resetForm();
-    }catch(err){
-      console.error("Error al guardar en Firestore:", err);
+    } catch (err) {
+      console.error("Error al guardar en Firestore / Storage:", err);
       alert('Error al guardar el atleta: ' + err.message);
     }
   });
 
-  window.logout=async()=>{await _0x4(auth);localStorage.removeItem('currentClub');location.href='index.html';};
+  window.logout = async () => { await _0x4(auth); localStorage.removeItem('currentClub'); location.href = 'index.html'; };
 };
 
-function renderTable(arr){
-  const tb=_0xa('nTB');tb.innerHTML='';
-  if(!arr.length){tb.innerHTML='<tr><td colspan="6" class="text-center py-6 text-gray-400 italic">No hay atletas registrados.</td></tr>';return;}
+function renderTable(arr) {
+  const tb = _0xa('nTB'); tb.innerHTML = '';
+  if (!arr.length) { tb.innerHTML = '<tr><td colspan="6" class="text-center py-6 text-gray-400 italic">No hay atletas registrados.</td></tr>'; return; }
 
   const sortedArr = [...arr].sort((a, b) => {
     if (!a.fechaNacimiento) return 1;
@@ -269,14 +293,24 @@ function renderTable(arr){
     return new Date(a.fechaNacimiento) - new Date(b.fechaNacimiento);
   });
 
-  sortedArr.forEach(k=>{
-    const tr=document.createElement('tr');
-    tr.innerHTML=`
-      <td class="px-4 py-3 font-bold" style="color: var(--color-azul);">${k.nombre || ''} ${k.apellido || ''}</td>
-      <td class="px-4 py-3 text-gray-600 font-semibold">${k.sede||'N/A'}</td>
-      <td class="px-4 py-3 text-gray-600">${k.cedulaIdentidad||'N/A'}</td>
-      <td class="px-4 py-3 text-gray-600"><span class="px-2 py-0.5 bg-blue-50 text-blue-800 rounded font-bold text-xs">${k.categoria||'N/A'}</span></td>
-      <td class="px-4 py-3 text-gray-600">${k.nombreRepresentante||'N/A'}</td>
+  sortedArr.forEach(k => {
+    const tr = document.createElement('tr');
+    // Miniatura de la foto o iniciales si no tiene
+    const avatar = k.fotoUrl 
+      ? `<img src="${k.fotoUrl}" class="w-9 h-9 rounded-full object-cover shadow-sm">` 
+      : `<div class="w-9 h-9 rounded-full bg-blue-100 text-blue-800 flex items-center font-bold justify-center text-xs">${(k.nombre?.[0]||'')+(k.apellido?.[0]||'')}</div>`;
+
+    tr.innerHTML = `
+      <td class="px-4 py-3 flex items-center space-x-3">
+        ${avatar}
+        <div>
+          <div class="font-bold" style="color: var(--color-azul);">${k.nombre || ''} ${k.apellido || ''}</div>
+        </div>
+      </td>
+      <td class="px-4 py-3 text-gray-600 font-semibold">${k.sede || 'N/A'}</td>
+      <td class="px-4 py-3 text-gray-600">${k.cedulaIdentidad || 'N/A'}</td>
+      <td class="px-4 py-3 text-gray-600"><span class="px-2 py-0.5 bg-blue-50 text-blue-800 rounded font-bold text-xs">${k.categoria || 'N/A'}</span></td>
+      <td class="px-4 py-3 text-gray-600">${k.nombreRepresentante || 'N/A'}</td>
       <td class="px-4 py-3 text-center space-x-2">
         <button onclick="editAtleta('${k.id}')" class="font-semibold text-xs px-2.5 py-1 rounded transition" style="background-color: #FEF3C7; color: #92400E;">Editar</button>
         <button onclick="deleteAtleta('${k.id}')" class="text-red-600 hover:text-red-900 font-semibold text-xs bg-red-50 px-2.5 py-1 rounded transition">Eliminar</button>
@@ -285,59 +319,61 @@ function renderTable(arr){
   });
 }
 
-window.filterNomina=()=>{
-  const t=_0xa('sAt').value.toLowerCase();
+window.filterNomina = () => {
+  const t = _0xa('sAt').value.toLowerCase();
   const sedeFiltro = _0xa('filtroSede').value;
   
-  const f=_aL.filter(x=>{
+  const f = _aL.filter(x => {
     const coincideSede = (sedeFiltro === 'todos' || x.sede === sedeFiltro);
-    const coincideTexto = (x.nombre+' '+x.apellido).toLowerCase().includes(t)||(x.cedulaIdentidad&&x.cedulaIdentidad.toString().includes(t))||(x.nombreRepresentante&&x.nombreRepresentante.toLowerCase().includes(t));
+    const coincideTexto = (x.nombre + ' ' + x.apellido).toLowerCase().includes(t) || (x.cedulaIdentidad && x.cedulaIdentidad.toString().includes(t)) || (x.nombreRepresentante && x.nombreRepresentante.toLowerCase().includes(t));
     return coincideSede && coincideTexto;
   });
   renderTable(f);
 };
 
-window.editAtleta=(id)=>{
-  const k=_aL.find(x=>x.id===id);
-  if(!k)return;
-  _0xa('aId').value=k.id;
-  _0xa('nombre').value=k.nombre||'';
-  _0xa('apellido').value=k.apellido||'';
-  _0xa('cedulaIdentidad').value=k.cedulaIdentidad||'';
-  _0xa('telefono').value=k.telefono||'';
-  _0xa('fechaNacimiento').value=k.fechaNacimiento||'';
-  _0xa('sede').value=k.sede||'';
-  _0xa('categoria').value=k.categoria||'';
-  _0xa('nroCamiseta').value=k.nroCamiseta||'';
-  _0xa('peso').value=k.peso||'';
-  _0xa('talla').value=k.talla||'';
-  _0xa('nombreRepresentante').value=k.nombreRepresentante||'';
-  _0xa('cedulaRepresentante').value=k.cedulaRepresentante||'';
-  _0xa('telefonoRepresentante').value=k.telefonoRepresentante||'';
-  _0xa('frecuenciaPago').value=k.frecuenciaPago||'mensual';
-  _0xa('montoPago').value=k.montoPago||'';
-  _0xa('fechaUltimoPago').value=k.fechaUltimoPago||'';
-  _0xa('fT').innerText='Editar Atleta';
-  _0xa('bS').innerText='Actualizar Atleta';
+window.editAtleta = (id) => {
+  const k = _aL.find(x => x.id === id);
+  if (!k) return;
+  _0xa('aId').value = k.id;
+  _0xa('nombre').value = k.nombre || '';
+  _0xa('apellido').value = k.apellido || '';
+  _0xa('cedulaIdentidad').value = k.cedulaIdentidad || '';
+  _0xa('telefono').value = k.telefono || '';
+  _0xa('fechaNacimiento').value = k.fechaNacimiento || '';
+  _0xa('sede').value = k.sede || '';
+  _0xa('categoria').value = k.categoria || '';
+  _0xa('nroCamiseta').value = k.nroCamiseta || '';
+  _0xa('peso').value = k.peso || '';
+  _0xa('talla').value = k.talla || '';
+  _0xa('nombreRepresentante').value = k.nombreRepresentante || '';
+  _0xa('cedulaRepresentante').value = k.cedulaRepresentante || '';
+  _0xa('telefonoRepresentante').value = k.telefonoRepresentante || '';
+  _0xa('frecuenciaPago').value = k.frecuenciaPago || 'mensual';
+  _0xa('montoPago').value = k.montoPago || '';
+  _0xa('fechaUltimoPago').value = k.fechaUltimoPago || '';
+  _0xa('fotoUrlActual').value = k.fotoUrl || '';
+  _0xa('fT').innerText = 'Editar Atleta';
+  _0xa('bS').innerText = 'Actualizar Atleta';
   _0xa('bC').classList.remove('hidden');
-  window.scrollTo({top:0,behavior:'smooth'});
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
-window.deleteAtleta=async(id)=>{
-  if(confirm('¿Seguro que deseas eliminar este atleta?')){
-    try{
-      const app=_0x1();
-      const db=_0x5(app);
-      await _0x14(_0x7(db,'club_athletes',id));
-    }catch(e){console.error(e);alert('Error al eliminar');}
+window.deleteAtleta = async (id) => {
+  if (confirm('¿Seguro que deseas eliminar este atleta?')) {
+    try {
+      const app = _0x1();
+      const db = _0x5(app);
+      await _0x14(_0x7(db, 'club_athletes', id));
+    } catch (e) { console.error(e); alert('Error al eliminar'); }
   }
 };
 
-window.resetForm=()=>{
+window.resetForm = () => {
   _0xa('aForm').reset();
-  _0xa('aId').value='';
-  _0xa('fT').innerText='Registrar Nuevo Atleta';
-  _0xa('bS').innerText='Guardar Atleta';
+  _0xa('aId').value = '';
+  _0xa('fotoUrlActual').value = '';
+  _0xa('fT').innerText = 'Registrar Nuevo Atleta';
+  _0xa('bS').innerText = 'Guardar Atleta';
   _0xa('bC').classList.add('hidden');
 };
 
