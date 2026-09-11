@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
 :root {
-  --color-azul: #1E3A8A;   /* Azul corporativo del logo */
+  --color-azul: #1E3A8A;    /* Azul corporativo del logo */
   --color-mostaza: #D97706; /* Mostaza corporativo del logo */
   --bg-claro: #F9FAFB;
 }
@@ -101,8 +101,9 @@ body {
                             <input type="number" step="0.1" id="peso" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2.5 border focus:ring-amber-500 focus:border-amber-500 outline-none">
                         </div>
                         <div>
-                            <label class="block text-sm font-semibold text-gray-700">Talla (cm)</label>
-                            <input type="number" step="0.1" id="talla" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2.5 border focus:ring-amber-500 focus:border-amber-500 outline-none">
+                            <label class="block text-sm font-semibold text-gray-700">Talla (m / cm)</label>
+                            <!-- Actualizado step a 0.01 para permitir decimales como 1.72 -->
+                            <input type="number" step="0.01" id="talla" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2.5 border focus:ring-amber-500 focus:border-amber-500 outline-none">
                         </div>
                     </div>
                     <hr class="border-gray-200 my-2">
@@ -203,7 +204,6 @@ const _0xc=()=>{
           _tD=d.data().teamId;
         }
 
-        // Lectura completa en tiempo real sin requerir índices compuestos
         _0x8(_0x6(db,'club_athletes'),(sn)=>{
           _aL=[];
           sn.forEach(x=>{
@@ -263,7 +263,6 @@ function renderTable(arr){
   const tb=_0xa('nTB');tb.innerHTML='';
   if(!arr.length){tb.innerHTML='<tr><td colspan="6" class="text-center py-6 text-gray-400 italic">No hay atletas registrados.</td></tr>';return;}
 
-  // Ordenar por fecha de nacimiento (de menor a mayor / del más viejo al más joven)
   const sortedArr = [...arr].sort((a, b) => {
     if (!a.fechaNacimiento) return 1;
     if (!b.fechaNacimiento) return -1;
