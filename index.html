@@ -150,7 +150,7 @@ window.addEventListener('appinstalled', () => {
   }
 });
 
-// Función para comprobar si la app corre como PWA instalada (standalone)
+// Comprobar si corre como PWA instalada
 function isAppInstalled() {
   return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 }
@@ -196,7 +196,7 @@ window.recuperarPassword = async () => {
   }
 };
 
-// Manejo del botón de instalación dentro del modal
+// Acción del botón principal del modal de instalación
 document.getElementById('btnTriggerInstall').addEventListener('click', async () => {
   if (deferredPrompt) {
     deferredPrompt.prompt();
@@ -209,8 +209,10 @@ document.getElementById('btnTriggerInstall').addEventListener('click', async () 
     }
     deferredPrompt = null;
   } else {
-    // Si el navegador no disparó el evento automático (como iOS u otros casos), mostramos pistas manuales
-    document.getElementById('manualInstallHint').classList.remove('hidden');
+    const hint = document.getElementById('manualInstallHint');
+    hint.classList.remove('hidden');
+    hint.classList.add('bg-amber-50', 'border-amber-200', 'text-amber-900');
+    hint.innerHTML = '⚠️ <b>Instalación manual requerida:</b> Ve arriba a los tres puntos ( menú ) de tu navegador y selecciona <b>"Instalar aplicación"</b>.';
   }
 });
 
@@ -231,16 +233,15 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
     
-    // Definir el destino según el rol/usuario
     const targetUrl = 'index_menu.html';
 
-    // Validación obligatoria de instalación PWA
+    // Validación obligatoria de PWA
     if (!isAppInstalled()) {
       pendingRedirectUrl = targetUrl;
       document.getElementById('installModal').classList.remove('hidden');
       btn.disabled = false;
       btn.textContent = 'Ingresar al Sistema';
-      return; // Detiene el flujo hasta que instale la app
+      return; 
     }
 
     if (email === 'admin@esbalir.com') {
