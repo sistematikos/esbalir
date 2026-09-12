@@ -421,10 +421,17 @@ window.editAtleta = (id) => {
 window.deleteAtleta = async (id) => {
   if (confirm('¿Seguro que deseas eliminar este atleta?')) {
     try {
-      const app = _0x1();
+      // Importa getApp de firebase-app si no lo tienes, o usa la instancia global si prefieres.
+      // O de forma más directa, usa getFirestore() apuntando a la app ya creada:
+      const { getApp } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js");
+      const app = getApp(); // Obtiene la instancia activa de Firebase sin duplicarla
       const db = _0x5(app);
+      
       await _0x14(_0x7(db, 'club_athletes', id));
-    } catch (e) { console.error(e); alert('Error al eliminar'); }
+    } catch (e) { 
+      console.error(e); 
+      alert('Error al eliminar: ' + e.message); 
+    }
   }
 };
 
